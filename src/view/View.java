@@ -232,4 +232,132 @@ public class View {
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         mainPanel.add(mainFooterPanel, BorderLayout.SOUTH);
     }
+
+    public JButton getSaveFileButton() {
+        return saveFileButton;
+    }
+
+    public void setSaveFileButton(JButton saveFileButton) {
+        this.saveFileButton = saveFileButton;
+    }
+
+    public JButton getLoadFileButton() {
+        return loadFileButton;
+    }
+
+    public void setLoadFileButton(JButton loadFileButton) {
+        this.loadFileButton = loadFileButton;
+    }
+
+    public JButton getExportFileButton() {
+        return exportFileButton;
+    }
+
+    public void setExportFileButton(JButton exportFileButton) {
+        this.exportFileButton = exportFileButton;
+    }
+
+    public JButton getPrintFileButton() {
+        return printFileButton;
+    }
+
+    public void setPrintFileButton(JButton printFileButton) {
+        this.printFileButton = printFileButton;
+    }
+
+    public JTextField getDateTextField() {
+        return dateTextField;
+    }
+
+    public void setDateTextField(JTextField dateTextField) {
+        this.dateTextField = dateTextField;
+    }
+
+    public JTextField getDescriptionTextField() {
+        return descriptionTextField;
+    }
+
+    public void setDescriptionTextField(JTextField descriptionTextField) {
+        this.descriptionTextField = descriptionTextField;
+    }
+
+    public JTextField getAmountTextField() {
+        return amountTextField;
+    }
+
+    public void setAmountTextField(JTextField amountTextField) {
+        this.amountTextField = amountTextField;
+    }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
+    public void setAddButton(JButton addButton) {
+        this.addButton = addButton;
+    }
+
+    public JButton getDeleteButton() {
+        return deleteButton;
+    }
+
+    public void setDeleteButton(JButton deleteButton) {
+        this.deleteButton = deleteButton;
+    }
+
+    public JButton getUpdateButton() {
+        return updateButton;
+    }
+
+    public void setUpdateButton(JButton updateButton) {
+        this.updateButton = updateButton;
+    }
+
+    public JTextField getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(JTextField calendar) {
+        this.calendar = calendar;
+    }
+
+    public JTextField getSearchBar() {
+        return searchBar;
+    }
+
+    public void setSearchBar(JTextField searchBar) {
+        this.searchBar = searchBar;
+    }
+
+    public JButton getSearchButton() {
+        return searchButton;
+    }
+
+    public void setSearchButton(JButton searchButton) {
+        this.searchButton = searchButton;
+    }
+
+    public JButton getNextButton() {
+        return nextButton;
+    }
+
+    public void setNextButton(JButton nextButton) {
+        this.nextButton = nextButton;
+    }
+
+    public JLabel getTimeFrameLabel() {
+        return timeFrameLabel;
+    }
+
+    public void setTimeFrameLabel(JLabel timeFrameLabel) {
+        this.timeFrameLabel = timeFrameLabel;
+    }
+
+    public JLabel getValueAmountLabel() {
+        return valueAmountLabel;
+    }
+
+    public void setValueAmountLabel(JLabel valueAmountLabel) {
+        this.valueAmountLabel = valueAmountLabel;
+    }
 }
