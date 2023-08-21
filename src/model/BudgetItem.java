@@ -5,6 +5,12 @@ public class BudgetItem {
     private String description;
     private int amount;
 
+    public BudgetItem(Date date, String description, int amount) {
+        this.date = date;
+        this.description = description;
+        this.amount = amount;
+    }
+
     public Date getDate() {
         return date;
     }
