@@ -138,9 +138,9 @@ public class View {
         dateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, dateTextField.getPreferredSize().height));
         descriptionTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, descriptionTextField.getPreferredSize().height));
         amountTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, amountTextField.getPreferredSize().height));
-        addButton = new JButton("ADD");
-        deleteButton = new JButton("DELETE");
-        updateButton = new JButton("UPDATE");
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+        updateButton = new JButton("Update");
 
         // test
         //JLabel testLabel = new JLabel("Vedimao proidofadisaofup");
@@ -220,8 +220,8 @@ public class View {
 
         searchBar = new JTextField("", 24);
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchBar.getPreferredSize().height));
-        searchButton = new JButton("SEARCH");
-        nextButton = new JButton("NEXT");
+        searchButton = new JButton("Search");
+        nextButton = new JButton("Next");
 
         searchPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Search"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         searchPanel.add(searchBar);
