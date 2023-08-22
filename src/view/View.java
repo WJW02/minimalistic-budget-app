@@ -1,6 +1,10 @@
 package view;
 
+import model.Model;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 
 public class View {
@@ -55,17 +59,18 @@ public class View {
     private JPanel mainFooterPanel;
     private JLabel timeFrameLabel;
     private JScrollPane scrollPane;
+    private JTable table;
     private JLabel textAmountLabel;
     private JLabel valueAmountLabel;
 
 
-    public View() {
+    public View(DefaultTableModel tableModel) {
         frame = new JFrame("Budget app");
         gui = new JPanel(new BorderLayout(5, 5));
 
         createHeader();
         createSidebar();
-        createBody();
+        createBody(tableModel);
 
         gui.add(headerPanel, BorderLayout.NORTH);
         gui.add(sidebarPanel, BorderLayout.WEST);
@@ -74,7 +79,6 @@ public class View {
         frame.setBounds(100, 100, 1024, 768);
         frame.add(gui);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
     }
 
     private void createHeader() {
@@ -113,7 +117,19 @@ public class View {
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // sidebar operational panel
+        createOperationalPanel();
+        createCalendarPanel();
+        createSearchPanel();
+
+        sidebarPanel.add(operationalPanel);
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        sidebarPanel.add(calendarPanel);
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        sidebarPanel.add(searchPanel);
+        sidebarPanel.setBackground(Color.yellow);
+    }
+
+    private void createOperationalPanel() {
         operationalPanel = new JPanel();
         operationalPanel1 = new JPanel();
         operationalPanel2 = new JPanel();
@@ -176,8 +192,9 @@ public class View {
         operationalPanel.add(operationalPanel1);
         operationalPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         operationalPanel.add(operationalPanel4);
+    }
 
-        // sidebar calendar panel
+    private void createCalendarPanel() {
         calendarPanel = new JPanel();
         calendarPanel1 = new JPanel();
         calendarPanel2 = new JPanel();
@@ -211,8 +228,9 @@ public class View {
         calendarPanel.add(calendarPanel1);
         calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         calendarPanel.add(applyDateButton);
+    }
 
-        // sidebar search panel
+    private void createSearchPanel() {
         searchPanel = new JPanel();
         searchPanel1 = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
@@ -230,39 +248,45 @@ public class View {
         searchPanel1.add(Box.createRigidArea(new Dimension(5, 0)));
         searchPanel1.add(nextButton);
         searchPanel.add(searchPanel1);
-
-        // sidebar adding elements
-        sidebarPanel.add(operationalPanel);
-        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebarPanel.add(calendarPanel);
-        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebarPanel.add(searchPanel);
-        sidebarPanel.setBackground(Color.yellow);
     }
-    private void createBody() {
+
+    private void createBody(DefaultTableModel tableModel) {
         mainPanel = new JPanel(new BorderLayout(5, 5));
         mainHeaderPanel = new JPanel();
-        mainHeaderPanel.setLayout(new BoxLayout(mainHeaderPanel, BoxLayout.X_AXIS));
-        mainHeaderPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mainBodyPanel = new JPanel();
+        //mainBodyPanel = new JPanel();
         mainFooterPanel = new JPanel();
+
+        mainHeaderPanel.setLayout(new BoxLayout(mainHeaderPanel, BoxLayout.X_AXIS));
         mainFooterPanel.setLayout(new BoxLayout(mainFooterPanel, BoxLayout.X_AXIS));
+
+        mainHeaderPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         mainFooterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Header
         timeFrameLabel = new JLabel("TIME-FRAME");
         timeFrameLabel.setFont(new Font("Arial", Font.PLAIN, 52));
         mainHeaderPanel.add(timeFrameLabel);
-        scrollPane = new JScrollPane();
-        scrollPane.add(mainBodyPanel);
+
+        // Body
+        table = new JTable(tableModel);
+        scrollPane = new JScrollPane(table);
+        //mainBodyPanel.add(scrollPane);
+
+        // Footer
         textAmountLabel = new JLabel("TOTAL AMOUNT: ");
         textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         valueAmountLabel = new JLabel();
         valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         mainFooterPanel.add(textAmountLabel);
         mainFooterPanel.add(valueAmountLabel);
-        mainBodyPanel.setBackground(Color.green);
+
         mainPanel.add(mainHeaderPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         mainPanel.add(mainFooterPanel, BorderLayout.SOUTH);
+    }
+
+    public void display() {
+        frame.setVisible(true);
     }
 
     public JButton getSaveFileButton() {
