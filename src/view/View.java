@@ -33,7 +33,14 @@ public class View {
     private JButton updateButton;
     // calendar panel components
     private JPanel calendarPanel;
-    private JTextField calendar;
+    private JPanel calendarPanel1;
+    private JPanel calendarPanel2;
+    private JPanel calendarPanel3;
+    private JLabel startDateLabel;
+    private JLabel endDateLabel;
+    private JTextField startDateTextField;
+    private JTextField endDateTextField;
+    private JButton applyDateButton;
     // search panel components
     private JPanel searchPanel;
     private JPanel searchPanel1;
@@ -172,13 +179,38 @@ public class View {
 
         // sidebar calendar panel
         calendarPanel = new JPanel();
+        calendarPanel1 = new JPanel();
+        calendarPanel2 = new JPanel();
+        calendarPanel3 = new JPanel();
         calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
+        calendarPanel1.setLayout(new BoxLayout(calendarPanel1, BoxLayout.X_AXIS));
+        calendarPanel2.setLayout(new BoxLayout(calendarPanel2, BoxLayout.Y_AXIS));
+        calendarPanel3.setLayout(new BoxLayout(calendarPanel3, BoxLayout.Y_AXIS));
 
-        calendar = new JTextField("", 24);
-        calendar.setMaximumSize(new Dimension(Integer.MAX_VALUE, calendar.getPreferredSize().height));
+        startDateLabel = new JLabel("Start date");
+        endDateLabel = new JLabel("End date");
 
+        startDateTextField = new JTextField("", 16);
+        startDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, startDateTextField.getPreferredSize().height));
+        endDateTextField = new JTextField("", 16);
+        endDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, endDateTextField.getPreferredSize().height));
+
+        calendarPanel2.add(startDateLabel);
+        calendarPanel2.add(Box.createRigidArea(new Dimension(0, 10)));
+        calendarPanel2.add(endDateLabel);
+        calendarPanel3.add(startDateTextField);
+        calendarPanel3.add(Box.createRigidArea(new Dimension(0, 5)));
+        calendarPanel3.add(endDateTextField);
+
+        applyDateButton = new JButton("Apply");
+
+        calendarPanel1.add(calendarPanel2);
+        calendarPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
+        calendarPanel1.add(calendarPanel3);
         calendarPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Calendar"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        calendarPanel.add(calendar);
+        calendarPanel.add(calendarPanel1);
+        calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        calendarPanel.add(applyDateButton);
 
         // sidebar search panel
         searchPanel = new JPanel();
@@ -313,12 +345,28 @@ public class View {
         this.updateButton = updateButton;
     }
 
-    public JTextField getCalendar() {
-        return calendar;
+    public JTextField getStartDateTextField() {
+        return startDateTextField;
     }
 
-    public void setCalendar(JTextField calendar) {
-        this.calendar = calendar;
+    public void setStartDateTextField(JTextField startDateTextField) {
+        this.startDateTextField = startDateTextField;
+    }
+
+    public JTextField getEndDateTextField() {
+        return endDateTextField;
+    }
+
+    public void setEndDateTextField(JTextField endDateTextField) {
+        this.endDateTextField = endDateTextField;
+    }
+
+    public JButton getApplyDateButton() {
+        return applyDateButton;
+    }
+
+    public void setApplyDateButton(JButton applyDateButton) {
+        this.applyDateButton = applyDateButton;
     }
 
     public JTextField getSearchBar() {
