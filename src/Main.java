@@ -16,6 +16,7 @@ public class Main {
         Vector<BudgetItem> budgetItems = new Vector<>();
         budgetItems.add(new BudgetItem(LocalDate.now(), "Ciaone", 123));
         budgetItems.add(new BudgetItem(LocalDate.now(), "Arriv", 456));
+
         Model model = new Model(budgetItems);
         View view = new View(model.getTableModel());
         view.display();

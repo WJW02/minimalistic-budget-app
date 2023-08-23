@@ -16,7 +16,8 @@ public class Model {
     public Model(Vector<BudgetItem> budgetItems) {
         this();
         for (int i = 0; i < budgetItems.size(); ++i) {
-            tableModel.addRow(new BudgetItem[]{budgetItems.get(i)});
+            BudgetItem item = budgetItems.get(i);
+            tableModel.addRow(new Object[]{item.getDate(), item.getDescription(), item.getAmount()});
         }
     }
 
