@@ -13,8 +13,8 @@ public class View {
 
     // header components
     private JPanel headerPanel;
-    private JButton saveFileButton;
-    private JButton loadFileButton;
+    private CustomButton saveFileButton;
+    private JButton uploadFileButton;
     private JButton exportFileButton;
     private JButton printFileButton;
 
@@ -86,25 +86,32 @@ public class View {
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        saveFileButton = new JButton();
-        saveFileButton.setBorder(BorderFactory.createEmptyBorder());
-        try {
-            Image img = new ImageIcon("img/save.png").getImage();
-            saveFileButton.setIcon(new ImageIcon(img));
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        //saveFileButton.setContentAreaFilled(false);
-        loadFileButton = new JButton("Load");
-        loadFileButton.setBorder(BorderFactory.createEmptyBorder());
-        exportFileButton = new JButton("Export");
-        exportFileButton.setBorder(BorderFactory.createEmptyBorder());
-        printFileButton = new JButton("Print");
-        printFileButton.setBorder(BorderFactory.createEmptyBorder());
+        saveFileButton = new CustomButton(Color.green, Color.yellow, Color.blue);
+        uploadFileButton = new JButton();
+        exportFileButton = new JButton();
+        printFileButton = new JButton();
+
+        saveFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_save.png").getImage()));
+        uploadFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_upload.png").getImage()));
+        exportFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_export.png").getImage()));
+        printFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_print.png").getImage()));
+
+
+        /*
+        Dimension buttonSize = new Dimension(79, 64);
+        //saveFileButton.setPreferredSize(buttonSize);    // Allocates the space
+        //saveFileButton.setMaximumSize(buttonSize);      // Uses the space
+        uploadFileButton.setPreferredSize(buttonSize);
+        uploadFileButton.setMaximumSize(buttonSize);
+        exportFileButton.setPreferredSize(buttonSize);
+        exportFileButton.setMaximumSize(buttonSize);
+        printFileButton.setPreferredSize(buttonSize);
+        printFileButton.setMaximumSize(buttonSize);
+        */
 
         headerPanel.add(saveFileButton);
         headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        headerPanel.add(loadFileButton);
+        headerPanel.add(uploadFileButton);
         headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         headerPanel.add(exportFileButton);
         headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -289,20 +296,20 @@ public class View {
         frame.setVisible(true);
     }
 
-    public JButton getSaveFileButton() {
+    public CustomButton getSaveFileButton() {
         return saveFileButton;
     }
 
-    public void setSaveFileButton(JButton saveFileButton) {
+    public void setSaveFileButton(CustomButton saveFileButton) {
         this.saveFileButton = saveFileButton;
     }
 
-    public JButton getLoadFileButton() {
-        return loadFileButton;
+    public JButton getUploadFileButton() {
+        return uploadFileButton;
     }
 
-    public void setLoadFileButton(JButton loadFileButton) {
-        this.loadFileButton = loadFileButton;
+    public void setUploadFileButton(JButton uploadFileButton) {
+        this.uploadFileButton = uploadFileButton;
     }
 
     public JButton getExportFileButton() {
