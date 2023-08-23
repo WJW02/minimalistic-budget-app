@@ -14,9 +14,9 @@ public class View {
     // header components
     private JPanel headerPanel;
     private CustomButton saveFileButton;
-    private JButton uploadFileButton;
-    private JButton exportFileButton;
-    private JButton printFileButton;
+    private CustomButton uploadFileButton;
+    private CustomButton exportFileButton;
+    private CustomButton printFileButton;
 
     // sidebar components
     private JPanel sidebarPanel;
@@ -66,7 +66,7 @@ public class View {
 
     public View(DefaultTableModel tableModel) {
         frame = new JFrame("Budget app");
-        gui = new JPanel(new BorderLayout(5, 5));
+        gui = new JPanel(new BorderLayout());
 
         createHeader();
         createSidebar();
@@ -86,15 +86,23 @@ public class View {
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        saveFileButton = new CustomButton(Color.green, Color.yellow, Color.blue);
-        uploadFileButton = new JButton();
-        exportFileButton = new JButton();
-        printFileButton = new JButton();
+        Color normalColor = new Color(23, 37, 42);
+        Color hoverButtonColor = new Color(43,64,71);
+        Color pressedButtonColor = new Color(83, 119, 132);
+        saveFileButton = new CustomButton(normalColor, hoverButtonColor, pressedButtonColor);
+        uploadFileButton = new CustomButton(normalColor, hoverButtonColor, pressedButtonColor);
+        exportFileButton = new CustomButton(normalColor, hoverButtonColor, pressedButtonColor);
+        printFileButton = new CustomButton(normalColor, hoverButtonColor, pressedButtonColor);
 
         saveFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_save.png").getImage()));
         uploadFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_upload.png").getImage()));
         exportFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_export.png").getImage()));
         printFileButton.setIcon(new ImageIcon(new ImageIcon("img/icon_print.png").getImage()));
+
+        saveFileButton.setBorder(null);
+        uploadFileButton.setBorder(null);
+        exportFileButton.setBorder(null);
+        printFileButton.setBorder(null);
 
 
         /*
@@ -110,14 +118,14 @@ public class View {
         */
 
         headerPanel.add(saveFileButton);
-        headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        headerPanel.add(Box.createRigidArea(new Dimension(16, 0)));
         headerPanel.add(uploadFileButton);
-        headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        headerPanel.add(Box.createRigidArea(new Dimension(16, 0)));
         headerPanel.add(exportFileButton);
-        headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        headerPanel.add(Box.createRigidArea(new Dimension(16, 0)));
         headerPanel.add(printFileButton);
-        headerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        headerPanel.setBackground(Color.red);
+        headerPanel.add(Box.createRigidArea(new Dimension(16, 0)));
+        headerPanel.setBackground(normalColor);
     }
     private void createSidebar() {
         sidebarPanel = new JPanel();
@@ -133,7 +141,7 @@ public class View {
         sidebarPanel.add(calendarPanel);
         sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebarPanel.add(searchPanel);
-        sidebarPanel.setBackground(Color.yellow);
+        sidebarPanel.setBackground(new Color(43, 122, 120));
     }
 
     private void createOperationalPanel() {
@@ -155,6 +163,11 @@ public class View {
         dateLabel = new JLabel("Date");
         descriptionLabel = new JLabel("Description");
         amountLabel = new JLabel("Amount");
+
+        dateLabel.setForeground(Color.WHITE);
+        descriptionLabel.setForeground(Color.WHITE);
+        amountLabel.setForeground(Color.WHITE);
+
         dateTextField = new JTextField("", 16);
         descriptionTextField = new JTextField("", 16);
         amountTextField = new JTextField("", 16);
@@ -186,16 +199,17 @@ public class View {
         operationalPanel4.add(updateButton);
 
         // test
-        operationalPanel.setBackground(Color.green);
-        operationalPanel1.setBackground(Color.green);
-        operationalPanel2.setBackground(Color.green);
-        operationalPanel3.setBackground(Color.green);
-        operationalPanel4.setBackground(Color.green);
+        operationalPanel.setOpaque(false);
+        operationalPanel1.setOpaque(false);
+        operationalPanel2.setOpaque(false);
+        operationalPanel3.setOpaque(false);
+        operationalPanel4.setOpaque(false);
 
         operationalPanel1.add(operationalPanel2);
         operationalPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
         operationalPanel1.add(operationalPanel3);
-        operationalPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Table operations"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        operationalPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Table operations",0,0, new Font("Arial", Font.BOLD, 14), Color.WHITE), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         operationalPanel.add(operationalPanel1);
         operationalPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         operationalPanel.add(operationalPanel4);
@@ -214,10 +228,18 @@ public class View {
         startDateLabel = new JLabel("Start date");
         endDateLabel = new JLabel("End date");
 
+        startDateLabel.setForeground(Color.WHITE);
+        endDateLabel.setForeground(Color.WHITE);
+
         startDateTextField = new JTextField("", 16);
         startDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, startDateTextField.getPreferredSize().height));
         endDateTextField = new JTextField("", 16);
         endDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, endDateTextField.getPreferredSize().height));
+
+        calendarPanel.setOpaque(false);
+        calendarPanel1.setOpaque(false);
+        calendarPanel2.setOpaque(false);
+        calendarPanel3.setOpaque(false);
 
         calendarPanel2.add(startDateLabel);
         calendarPanel2.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -231,7 +253,7 @@ public class View {
         calendarPanel1.add(calendarPanel2);
         calendarPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
         calendarPanel1.add(calendarPanel3);
-        calendarPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Calendar"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        calendarPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Calendar",0,0, new Font("Arial", Font.BOLD, 14), Color.WHITE), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         calendarPanel.add(calendarPanel1);
         calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         calendarPanel.add(applyDateButton);
@@ -248,7 +270,10 @@ public class View {
         searchButton = new JButton("Search");
         nextButton = new JButton("Next");
 
-        searchPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Search"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        searchPanel.setOpaque(false);
+        searchPanel1.setOpaque(false);
+
+        searchPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Search",0,0, new Font("Arial", Font.BOLD, 14), Color.WHITE), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         searchPanel.add(searchBar);
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         searchPanel1.add(searchButton);
@@ -258,7 +283,7 @@ public class View {
     }
 
     private void createBody(DefaultTableModel tableModel) {
-        mainPanel = new JPanel(new BorderLayout(5, 5));
+        mainPanel = new JPanel(new BorderLayout());
         mainHeaderPanel = new JPanel();
         //mainBodyPanel = new JPanel();
         mainFooterPanel = new JPanel();
@@ -271,6 +296,7 @@ public class View {
 
         // Header
         timeFrameLabel = new JLabel("TIME-FRAME");
+        timeFrameLabel.setForeground(Color.WHITE);
         timeFrameLabel.setFont(new Font("Arial", Font.PLAIN, 52));
         mainHeaderPanel.add(timeFrameLabel);
 
@@ -278,14 +304,24 @@ public class View {
         table = new JTable(tableModel);
         scrollPane = new JScrollPane(table);
         //mainBodyPanel.add(scrollPane);
+        //mainBodyPanel.setBackground(new Color(222,242,241));
 
         // Footer
         textAmountLabel = new JLabel("TOTAL AMOUNT: ");
-        textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         valueAmountLabel = new JLabel();
+
+        textAmountLabel.setForeground(Color.WHITE);
+        valueAmountLabel.setForeground(Color.WHITE);
+
+        textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
+
         mainFooterPanel.add(textAmountLabel);
         mainFooterPanel.add(valueAmountLabel);
+
+        mainHeaderPanel.setBackground(new Color(58, 175, 169));
+        scrollPane.getViewport().setBackground(new Color(222,242,241));
+        mainFooterPanel.setBackground(new Color(58, 175, 169));
 
         mainPanel.add(mainHeaderPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
@@ -304,27 +340,27 @@ public class View {
         this.saveFileButton = saveFileButton;
     }
 
-    public JButton getUploadFileButton() {
+    public CustomButton getUploadFileButton() {
         return uploadFileButton;
     }
 
-    public void setUploadFileButton(JButton uploadFileButton) {
+    public void setUploadFileButton(CustomButton uploadFileButton) {
         this.uploadFileButton = uploadFileButton;
     }
 
-    public JButton getExportFileButton() {
+    public CustomButton getExportFileButton() {
         return exportFileButton;
     }
 
-    public void setExportFileButton(JButton exportFileButton) {
+    public void setExportFileButton(CustomButton exportFileButton) {
         this.exportFileButton = exportFileButton;
     }
 
-    public JButton getPrintFileButton() {
+    public CustomButton getPrintFileButton() {
         return printFileButton;
     }
 
-    public void setPrintFileButton(JButton printFileButton) {
+    public void setPrintFileButton(CustomButton printFileButton) {
         this.printFileButton = printFileButton;
     }
 
