@@ -310,9 +310,6 @@ public class View {
         textAmountLabel = new JLabel("TOTAL AMOUNT: ");
         valueAmountLabel = new JLabel();
 
-        textAmountLabel.setForeground(Color.WHITE);
-        valueAmountLabel.setForeground(Color.WHITE);
-
         textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
 
@@ -321,7 +318,7 @@ public class View {
 
         mainHeaderPanel.setBackground(new Color(58, 175, 169));
         scrollPane.getViewport().setBackground(new Color(222,242,241));
-        mainFooterPanel.setBackground(new Color(58, 175, 169));
+        mainFooterPanel.setBackground(new Color(222,242,241));
 
         mainPanel.add(mainHeaderPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);

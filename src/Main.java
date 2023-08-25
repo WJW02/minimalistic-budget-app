@@ -8,6 +8,7 @@ import java.util.Vector;
 import model.BudgetItem;
 import model.Model;
 import view.View;
+import controller.Controller;
 /**
  * Documentation
  */
@@ -19,7 +20,8 @@ public class Main {
 
         Model model = new Model(budgetItems);
         View view = new View(model.getTableModel());
-        view.display();
+        Controller controller = new Controller(model, view);
+        controller.displayView();
     }
 
 }
