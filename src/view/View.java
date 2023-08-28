@@ -1,10 +1,8 @@
 package view;
 
-import model.Model;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 
 public class View {
@@ -55,9 +53,9 @@ public class View {
     // body components
     private JPanel mainPanel;
     private JPanel mainHeaderPanel;
-    private JPanel mainBodyPanel;
     private JPanel mainFooterPanel;
     private JLabel timeFrameLabel;
+    private TableRowSorter<DefaultTableModel> sorter;
     private JScrollPane scrollPane;
     private JTable table;
     private JLabel textAmountLabel;
@@ -302,6 +300,8 @@ public class View {
 
         // Body
         table = new JTable(tableModel);
+        sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
         scrollPane = new JScrollPane(table);
         //mainBodyPanel.add(scrollPane);
         //mainBodyPanel.setBackground(new Color(222,242,241));
@@ -311,7 +311,7 @@ public class View {
         valueAmountLabel = new JLabel();
 
         textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
-        valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
+        valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));        //mainBodyPanel = new JPanel();
 
         mainFooterPanel.add(textAmountLabel);
         mainFooterPanel.add(valueAmountLabel);
@@ -463,6 +463,14 @@ public class View {
 
     public void setTimeFrameLabel(JLabel timeFrameLabel) {
         this.timeFrameLabel = timeFrameLabel;
+    }
+
+    public TableRowSorter<DefaultTableModel> getSorter() {
+        return sorter;
+    }
+
+    public void setSorter(TableRowSorter<DefaultTableModel> sorter) {
+        this.sorter = sorter;
     }
 
     public JLabel getValueAmountLabel() {

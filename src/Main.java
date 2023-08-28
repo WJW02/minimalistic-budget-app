@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Vector;
 
@@ -15,8 +16,8 @@ import controller.Controller;
 public class Main {
     public static void main(String[] args) {
         Vector<BudgetItem> budgetItems = new Vector<>();
-        budgetItems.add(new BudgetItem(LocalDate.now(), "Ciaone", 123));
-        budgetItems.add(new BudgetItem(LocalDate.now(), "Arriv", 456));
+        budgetItems.add(new BudgetItem(LocalDate.now(), "Ciaone", new BigDecimal(123)));
+        budgetItems.add(new BudgetItem(LocalDate.now(), "Arriv", new BigDecimal(456)));
 
         Model model = new Model(budgetItems);
         View view = new View(model.getTableModel());

@@ -1,12 +1,13 @@
 package model;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 public class BudgetItem {
     private LocalDate date;
     private String description;
-    private int amount;
+    private BigDecimal amount;
 
-    public BudgetItem(LocalDate date, String description, int amount) {
+    public BudgetItem(LocalDate date, String description, BigDecimal amount) {
         this.date = date;
         this.description = description;
         this.amount = amount;
@@ -28,11 +29,11 @@ public class BudgetItem {
         this.description = description;
     }
 
-    public int getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }
