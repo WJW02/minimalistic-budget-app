@@ -329,6 +329,14 @@ public class View {
         frame.setVisible(true);
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
+
     public CustomButton getSaveFileButton() {
         return saveFileButton;
     }

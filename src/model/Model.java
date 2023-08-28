@@ -17,12 +17,16 @@ public class Model {
         this();
         for (int i = 0; i < budgetItems.size(); ++i) {
             BudgetItem item = budgetItems.get(i);
-            tableModel.addRow(new Object[]{item.getDate(), item.getDescription(), item.getAmount()});
+            addRow(item);
         }
     }
 
     public DefaultTableModel getTableModel() {
         return tableModel;
+    }
+
+    public void addRow(BudgetItem item) {
+        tableModel.addRow(new Object[]{item.getDate(), item.getDescription(), item.getAmount()});
     }
 
 }
