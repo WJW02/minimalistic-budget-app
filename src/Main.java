@@ -16,8 +16,6 @@ import controller.Controller;
 public class Main {
     public static void main(String[] args) {
         Vector<BudgetItem> budgetItems = new Vector<>();
-        budgetItems.add(new BudgetItem(LocalDate.now(), "Ciaone", new BigDecimal(123)));
-        budgetItems.add(new BudgetItem(LocalDate.now(), "Arriv", new BigDecimal(456)));
 
         Model model = new Model(budgetItems);
         View view = new View(model.getTableModel());

@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class View {
     private JFrame frame;
@@ -229,9 +231,13 @@ public class View {
         startDateLabel.setForeground(Color.WHITE);
         endDateLabel.setForeground(Color.WHITE);
 
-        startDateTextField = new JTextField("", 16);
+        // Current date
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
+        startDateTextField = new JTextField(formatter.format(date), 16);
         startDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, startDateTextField.getPreferredSize().height));
-        endDateTextField = new JTextField("", 16);
+        endDateTextField = new JTextField(formatter.format(date), 16);
         endDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, endDateTextField.getPreferredSize().height));
 
         calendarPanel.setOpaque(false);
@@ -295,7 +301,7 @@ public class View {
         // Header
         timeFrameLabel = new JLabel("TIME-FRAME");
         timeFrameLabel.setForeground(Color.WHITE);
-        timeFrameLabel.setFont(new Font("Arial", Font.PLAIN, 52));
+        timeFrameLabel.setFont(new Font("Arial", Font.PLAIN, 32));
         mainHeaderPanel.add(timeFrameLabel);
 
         // Body
@@ -310,8 +316,8 @@ public class View {
         textAmountLabel = new JLabel("TOTAL AMOUNT: ");
         valueAmountLabel = new JLabel();
 
-        textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));
-        valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 36));        //mainBodyPanel = new JPanel();
+        textAmountLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        valueAmountLabel.setFont(new Font("Arial", Font.PLAIN, 24));        //mainBodyPanel = new JPanel();
 
         mainFooterPanel.add(textAmountLabel);
         mainFooterPanel.add(valueAmountLabel);
