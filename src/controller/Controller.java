@@ -165,7 +165,11 @@ public class Controller {
     }
 
     private void deleteItem() {
-
+        int selectedRowIndex = view.getTable().getSelectedRow();
+        if (selectedRowIndex != -1) {
+            int modelRowIndex = view.getTable().convertRowIndexToModel(selectedRowIndex);
+            model.getTableModel().removeRow(modelRowIndex);
+        }
     }
 
     private void updateItem() {

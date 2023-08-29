@@ -232,12 +232,12 @@ public class View {
         endDateLabel.setForeground(Color.WHITE);
 
         // Current date
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
+        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        //Date date = new Date();
 
-        startDateTextField = new JTextField(formatter.format(date), 16);
+        startDateTextField = new JTextField("", 16);
         startDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, startDateTextField.getPreferredSize().height));
-        endDateTextField = new JTextField(formatter.format(date), 16);
+        endDateTextField = new JTextField("", 16);
         endDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, endDateTextField.getPreferredSize().height));
 
         calendarPanel.setOpaque(false);
@@ -477,6 +477,14 @@ public class View {
 
     public void setTimeFrameLabel(JLabel timeFrameLabel) {
         this.timeFrameLabel = timeFrameLabel;
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setTable(JTable table) {
+        this.table = table;
     }
 
     public TableRowSorter<DefaultTableModel> getSorter() {
