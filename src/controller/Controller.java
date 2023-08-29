@@ -93,10 +93,10 @@ public class Controller {
                 search();
             }
         });
-        view.getNextButton().addActionListener(new ActionListener() {
+        view.getClearButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                next();
+                clear();
             }
         });
     }
@@ -285,8 +285,8 @@ public class Controller {
         }
     }
 
-    private void next() {
-
+    private void clear() {
+        
     }
 
 

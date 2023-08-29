@@ -50,7 +50,7 @@ public class View {
     private JPanel searchPanel1;
     private JTextField searchBar;
     private JButton searchButton;
-    private JButton nextButton;
+    private JButton clearButton;
 
     // body components
     private JPanel mainPanel;
@@ -272,7 +272,7 @@ public class View {
         searchBar = new JTextField("", 24);
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchBar.getPreferredSize().height));
         searchButton = new JButton("Search");
-        nextButton = new JButton("Next");
+        clearButton = new JButton("Clear");
 
         searchPanel.setOpaque(false);
         searchPanel1.setOpaque(false);
@@ -282,7 +282,7 @@ public class View {
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         searchPanel1.add(searchButton);
         searchPanel1.add(Box.createRigidArea(new Dimension(5, 0)));
-        searchPanel1.add(nextButton);
+        searchPanel1.add(clearButton);
         searchPanel.add(searchPanel1);
     }
 
@@ -463,12 +463,12 @@ public class View {
         this.searchButton = searchButton;
     }
 
-    public JButton getNextButton() {
-        return nextButton;
+    public JButton getClearButton() {
+        return clearButton;
     }
 
-    public void setNextButton(JButton nextButton) {
-        this.nextButton = nextButton;
+    public void setClearButton(JButton clearButton) {
+        this.clearButton = clearButton;
     }
 
     public JLabel getTimeFrameLabel() {
