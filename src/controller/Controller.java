@@ -203,12 +203,11 @@ public class Controller {
         Vector<RowFilter<DefaultTableModel, Integer>> orAfterDataRangeFilter = new Vector<>();
         Vector<RowFilter<DefaultTableModel, Integer>> orBeforeDataRangeFilter = new Vector<>();
         Vector<RowFilter<DefaultTableModel, Integer>> andDataRangeFilter = new Vector<>();
-
-        boolean flag = false;
+        
         String string1, string2;
         if (view.getStartDateTextField().getText().equals("") && view.getEndDateTextField().getText().equals("")) {
+            // Apply no filter
             view.getSorter().setRowFilter(null);
-            flag = true;
             string1 = "****-**-**";
             string2 = "****-**-**";
         }
@@ -247,14 +246,11 @@ public class Controller {
             else {
                 string2 = "****-**-**";
             }
-        }
-
-        // Apply filter
-        if (!flag) {
+            // Apply filter
             view.getSorter().setRowFilter(RowFilter.andFilter(andDataRangeFilter));
         }
 
-        // Change timeFrameLabel
+        // Update timeFrameLabel
         view.getTimeFrameLabel().setText("From " + string1 + " To " + string2);
     }
 
