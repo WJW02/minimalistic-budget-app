@@ -203,7 +203,7 @@ public class Controller {
         Vector<RowFilter<DefaultTableModel, Integer>> orAfterDataRangeFilter = new Vector<>();
         Vector<RowFilter<DefaultTableModel, Integer>> orBeforeDataRangeFilter = new Vector<>();
         Vector<RowFilter<DefaultTableModel, Integer>> andDataRangeFilter = new Vector<>();
-        
+
         String string1, string2;
         if (view.getStartDateTextField().getText().equals("") && view.getEndDateTextField().getText().equals("")) {
             // Apply no filter
@@ -255,11 +255,28 @@ public class Controller {
     }
 
     private void search() {
+        view.getTable().clearSelection();
+        String key = view.getSearchBar().getText();
+        if (key.equals("")) {
+            return;
+        }
 
+        int rowCount = model.getTableModel().getRowCount();
+        int columnCount = model.getTableModel().getColumnCount();
+        for (int i = 0; i < rowCount; ++i) {
+            int modelRowIndex = view.getSorter().convertRowIndexToModel(i);
+            for (int j = 0; j < columnCount; ++j) {
+                String s = model.getTableModel().getValueAt(modelRowIndex, j).toString();
+                if (s.contains(key)) {
+                    view.getTable().changeSelection(i, j, false, false);
+                    return;
+                }
+            }
+        }
     }
 
     private void next() {
-
+        
     }
 
 
