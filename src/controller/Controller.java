@@ -270,8 +270,12 @@ public class Controller {
             previousSearch = key;
         }
 
-        int rowCount = model.getTableModel().getRowCount();
+        int rowCount = view.getSorter().getViewRowCount();
         int columnCount = model.getTableModel().getColumnCount();
+        if (searchRowIndex >= rowCount) {
+            searchRowIndex = 0;
+        }
+
         for (; searchRowIndex < rowCount; ++searchRowIndex) {
             int modelRowIndex = view.getSorter().convertRowIndexToModel(searchRowIndex);
             for (int searchColumnIndex = 0; searchColumnIndex < columnCount; ++searchColumnIndex) {
@@ -286,7 +290,8 @@ public class Controller {
     }
 
     private void clear() {
-        
+        view.getSearchBar().setText("");
+        search();
     }
 
 
