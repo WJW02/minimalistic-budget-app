@@ -101,12 +101,6 @@ public class Controller {
         view.display();
     }
 
-    private void clearOperationalTextFields() {
-        view.getDateTextField().setText("");
-        view.getDescriptionTextField().setText("");
-        view.getAmountTextField().setText("");
-    }
-
     private void saveFile() {
 
     }
@@ -123,7 +117,13 @@ public class Controller {
 
     }
 
-    private void addItem() {
+    private void clearOperationalTextFields() {
+        view.getDateTextField().setText("");
+        view.getDescriptionTextField().setText("");
+        view.getAmountTextField().setText("");
+    }
+
+    private BudgetItem createBudgetItem() {
         // Empty fields check
         if (view.getDateTextField().getText().equals("") || view.getDescriptionTextField().getText().equals("") || view.getAmountTextField().getText().equals("")) {
             if (view.getDateTextField().getText().equals("") && !view.getDescriptionTextField().getText().equals("") && !view.getAmountTextField().getText().equals("")) {
@@ -133,7 +133,7 @@ public class Controller {
             }
             else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                return null;
             }
         }
 
@@ -144,7 +144,7 @@ public class Controller {
             date = dateFormat.parse(view.getDateTextField().getText());
         } catch (ParseException pe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid date", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            return null;
         }
 
         String description = view.getDescriptionTextField().getText();
@@ -155,25 +155,46 @@ public class Controller {
             amount = new BigDecimal(view.getAmountTextField().getText());
         } catch (NumberFormatException nfe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid amount", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        clearOperationalTextFields();
+        return new BudgetItem(date, description, amount);
+    }
+
+    private void addItem() {
+        BudgetItem item = createBudgetItem();
+        if (item == null) {
             return;
         }
-
-        // Add item
-        BudgetItem item = new BudgetItem(date, description, amount);
         model.addRow(item);
-        clearOperationalTextFields();
+    }
+
+    private int convertRowIndexToModel() {
+        int selectedRowIndex = view.getTable().getSelectedRow();
+        if (selectedRowIndex != -1) {
+            return view.getTable().convertRowIndexToModel(selectedRowIndex);
+        }
+        JOptionPane.showMessageDialog(view.getFrame(), "No row is selected", "Error", JOptionPane.ERROR_MESSAGE);
+        return -1;
     }
 
     private void deleteItem() {
-        int selectedRowIndex = view.getTable().getSelectedRow();
-        if (selectedRowIndex != -1) {
-            int modelRowIndex = view.getTable().convertRowIndexToModel(selectedRowIndex);
+        int modelRowIndex = convertRowIndexToModel();
+        if (modelRowIndex != -1) {
             model.getTableModel().removeRow(modelRowIndex);
         }
     }
 
     private void updateItem() {
-
+        int modelRowIndex = convertRowIndexToModel();
+        if (modelRowIndex != -1) {
+            BudgetItem item = createBudgetItem();
+            if (item != null) {
+                model.getTableModel().setValueAt(item.getDate(), modelRowIndex, 0);
+                model.getTableModel().setValueAt(item.getDescription(), modelRowIndex, 1);
+                model.getTableModel().setValueAt(item.getAmount(), modelRowIndex, 2);
+            }
+        }
     }
 
     private void applyDate() {
