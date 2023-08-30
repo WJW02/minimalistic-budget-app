@@ -121,7 +121,7 @@ public class Controller {
     }
 
     private void clearOperationalTextFields() {
-        view.getDateTextField().setText("");
+        // view.getDateTextField().setText("");
         view.getDescriptionTextField().setText("");
         view.getAmountTextField().setText("");
     }
@@ -136,7 +136,7 @@ public class Controller {
             totalValue = totalValue.add(value);
         }
 
-        view.getValueAmountLabel().setText("€" + String.valueOf(totalValue));
+        view.getValueAmountLabel().setText(String.valueOf(totalValue) + "€");
     }
 
     private BudgetItem createBudgetItem() {
