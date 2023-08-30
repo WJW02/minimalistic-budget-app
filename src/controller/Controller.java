@@ -126,6 +126,19 @@ public class Controller {
         view.getAmountTextField().setText("");
     }
 
+    private void updateValueAmountLabel() {
+        BigDecimal totalValue = new BigDecimal(0);
+        int rowCount = view.getSorter().getViewRowCount();
+
+        for (int i = 0; i < rowCount; ++i) {
+            int modelRowIndex = view.getSorter().convertRowIndexToModel(i);
+            BigDecimal value = (BigDecimal) model.getTableModel().getValueAt(modelRowIndex, 2);
+            totalValue = totalValue.add(value);
+        }
+
+        view.getValueAmountLabel().setText("€" + String.valueOf(totalValue));
+    }
+
     private BudgetItem createBudgetItem() {
         // Empty fields check
         if (view.getDateTextField().getText().equals("") || view.getDescriptionTextField().getText().equals("") || view.getAmountTextField().getText().equals("")) {
@@ -170,6 +183,7 @@ public class Controller {
             return;
         }
         model.addRow(item);
+        updateValueAmountLabel();
     }
 
     private int convertRowIndexToModel() {
@@ -185,6 +199,7 @@ public class Controller {
         int modelRowIndex = convertRowIndexToModel();
         if (modelRowIndex != -1) {
             model.getTableModel().removeRow(modelRowIndex);
+            updateValueAmountLabel();
         }
     }
 
@@ -196,6 +211,7 @@ public class Controller {
                 model.getTableModel().setValueAt(item.getDate(), modelRowIndex, 0);
                 model.getTableModel().setValueAt(item.getDescription(), modelRowIndex, 1);
                 model.getTableModel().setValueAt(item.getAmount(), modelRowIndex, 2);
+                updateValueAmountLabel();
             }
         }
     }
@@ -252,6 +268,8 @@ public class Controller {
             // Apply filter
             view.getSorter().setRowFilter(RowFilter.andFilter(andDataRangeFilter));
         }
+
+        updateValueAmountLabel();
 
         // Update timeFrameLabel
         view.getTimeFrameLabel().setText("From " + string1 + " To " + string2);
