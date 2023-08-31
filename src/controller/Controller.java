@@ -4,6 +4,7 @@ import model.Model;
 import view.View;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +37,7 @@ public class Controller {
         addActionListeners();
         applyDate();
         previousSearch = "";
-        fileChooser = new JFileChooser();
+        fileChooser = initFileChooser();
     }
 
     private void addActionListeners() {
@@ -104,6 +105,26 @@ public class Controller {
             }
         });
     }
+
+    private JFileChooser initFileChooser() {
+        return new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                File file = getSelectedFile();
+                if (!file.getAbsolutePath().toLowerCase().endsWith(".txt")) {
+                    file = new File(file + ".txt");
+                }
+                if (file.exists() && getDialogType() == SAVE_DIALOG) {
+                    int result = JOptionPane.showConfirmDialog(this, "The file exists, overwrite?", "Existing file", JOptionPane.YES_NO_OPTION);
+                    if (result != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                }
+                super.approveSelection();
+            }
+        };
+    }
+
     public void displayView() {
         view.display();
     }
@@ -111,6 +132,11 @@ public class Controller {
     private void saveFile() {
         if (fileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
+            // Force the extension type
+            if (!file.getAbsolutePath().toLowerCase().endsWith(".txt")) {
+                file = new File(file + ".txt");
+            }
+            // Write on file
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(file), "utf-8"))) {
                 DefaultTableModel tableModel = model.getTableModel();
