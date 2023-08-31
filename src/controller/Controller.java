@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +23,7 @@ public class Controller {
     private View view;
     int searchRowIndex;
     String previousSearch;
+    JFileChooser fileChooser;
 
     public Controller(Model model, View view) {
         this.model = model;
@@ -33,6 +35,7 @@ public class Controller {
         addActionListeners();
         applyDate();
         previousSearch = "";
+        fileChooser = new JFileChooser();
     }
 
     private void addActionListeners() {
@@ -105,7 +108,26 @@ public class Controller {
     }
 
     private void saveFile() {
-
+        if (fileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file), "utf-8"))) {
+                DefaultTableModel tableModel = model.getTableModel();
+                int rowCount = tableModel.getRowCount();
+                int columnCount = tableModel.getColumnCount();
+                for (int i = 0; i < rowCount; ++i) {
+                    for (int j = 0; j < columnCount; ++j) {
+                        writer.write(tableModel.getValueAt(i, j).toString());
+                        if (j != columnCount-1) {
+                            writer.write(" ");
+                        }
+                    }
+                    writer.write("\n");
+                }
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void uploadFile() {
@@ -157,6 +179,7 @@ public class Controller {
         // Date format check
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            // date = (dateFormat.parse(view.getDateTextField().getText()));
             date = dateFormat.parse(view.getDateTextField().getText());
         } catch (ParseException pe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid date", "Error", JOptionPane.ERROR_MESSAGE);
