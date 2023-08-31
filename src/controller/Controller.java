@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -175,13 +176,11 @@ public class Controller {
             }
         }
 
-        Date date;
+        LocalDate date;
         // Date format check
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            // date = (dateFormat.parse(view.getDateTextField().getText()));
-            date = dateFormat.parse(view.getDateTextField().getText());
-        } catch (ParseException pe) {
+            date = LocalDate.parse(view.getDateTextField().getText());
+        } catch (DateTimeParseException dtpe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid date", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
@@ -240,56 +239,48 @@ public class Controller {
     }
 
     private void applyDate() {
-        Date startDate, endDate;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Vector<RowFilter<DefaultTableModel, Integer>> orAfterDataRangeFilter = new Vector<>();
-        Vector<RowFilter<DefaultTableModel, Integer>> orBeforeDataRangeFilter = new Vector<>();
-        Vector<RowFilter<DefaultTableModel, Integer>> andDataRangeFilter = new Vector<>();
-
-        String string1, string2;
+        String string1 = "****-**-**";
+        String string2 = "****-**-**";
         if (view.getStartDateTextField().getText().equals("") && view.getEndDateTextField().getText().equals("")) {
             // Apply no filter
-            view.getSorter().setRowFilter(null);
             string1 = "****-**-**";
             string2 = "****-**-**";
+            view.getSorter().setRowFilter(null);
         }
         else {
+            Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
+            RowFilter<DefaultTableModel, Integer> fromDateFilter;
             if (!view.getStartDateTextField().getText().equals("")) {
-                // Date format check
-                try {
-                    startDate = dateFormat.parse(view.getStartDateTextField().getText());
-                } catch (ParseException pe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                orAfterDataRangeFilter.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, startDate, 0));
-                // Necessary because RowFilter.ComparisonType.AFTER matches only with date strictly greater than startDate
-                orAfterDataRangeFilter.add(RowFilter.dateFilter(RowFilter.ComparisonType.EQUAL, startDate, 0));
-                andDataRangeFilter.add(RowFilter.orFilter(orAfterDataRangeFilter));
-                string1 = view.getStartDateTextField().getText();
-            }
-            else {
+                 fromDateFilter = new RowFilter<DefaultTableModel, Integer>() {
+                    @Override
+                    public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                        LocalDate dateValue = (LocalDate) entry.getValue(0);
+                        LocalDate fromDate = LocalDate.parse(view.getStartDateTextField().getText());
+                        return dateValue.isAfter(fromDate) || dateValue.isEqual(fromDate);
+                    }
+                 };
+                 dateFilters.add(fromDateFilter);
+            } else {
                 string1 = "****-**-**";
             }
+
+            RowFilter<DefaultTableModel, Integer> toDateFilter;
             if (!view.getEndDateTextField().getText().equals("")) {
-                // Date format check
-                try {
-                    endDate = dateFormat.parse(view.getEndDateTextField().getText());
-                } catch (ParseException pe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                orBeforeDataRangeFilter.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, endDate, 0));
-                // Necessary because RowFilter.ComparisonType.BEFORE matches only with date strictly smaller than endDate
-                orBeforeDataRangeFilter.add(RowFilter.dateFilter(RowFilter.ComparisonType.EQUAL, endDate, 0));
-                andDataRangeFilter.add(RowFilter.orFilter(orBeforeDataRangeFilter));
-                string2 = view.getEndDateTextField().getText();
-            }
-            else {
+                toDateFilter = new RowFilter<DefaultTableModel, Integer>() {
+                    @Override
+                    public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                        LocalDate dateValue = (LocalDate) entry.getValue(0);
+                        LocalDate toDate = LocalDate.parse(view.getEndDateTextField().getText());
+                        return dateValue.isBefore(toDate) || dateValue.isEqual(toDate);
+                    }
+                };
+                dateFilters.add(toDateFilter);
+            } else {
                 string2 = "****-**-**";
             }
+
             // Apply filter
-            view.getSorter().setRowFilter(RowFilter.andFilter(andDataRangeFilter));
+            view.getSorter().setRowFilter(RowFilter.andFilter(dateFilters));
         }
 
         updateValueAmountLabel();
