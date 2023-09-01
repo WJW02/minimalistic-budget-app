@@ -15,9 +15,7 @@ import controller.Controller;
  */
 public class Main {
     public static void main(String[] args) {
-        Vector<BudgetItem> budgetItems = new Vector<>();
-
-        Model model = new Model(budgetItems);
+        Model model = new Model();
         View view = new View(model.getTableModel());
         Controller controller = new Controller(model, view);
         controller.displayView();

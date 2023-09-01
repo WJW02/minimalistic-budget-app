@@ -107,22 +107,30 @@ public class Controller {
     }
 
     private JFileChooser initFileChooser() {
-        return new JFileChooser() {
+        JFileChooser fileChooser = new JFileChooser() {
             @Override
             public void approveSelection() {
                 File file = getSelectedFile();
-                if (!file.getAbsolutePath().toLowerCase().endsWith(".txt")) {
+                if (!file.getName().endsWith(".txt")) {
                     file = new File(file + ".txt");
                 }
                 if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this, "The file exists, overwrite?", "Existing file", JOptionPane.YES_NO_OPTION);
+                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
                     if (result != JOptionPane.YES_OPTION) {
                         return;
                     }
                 }
+                else if (!file.exists() && getDialogType() == OPEN_DIALOG) {
+                    JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 super.approveSelection();
             }
         };
+        fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());  //remove the default file filter
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT file", "txt");
+        fileChooser.addChoosableFileFilter(filter);
+        return fileChooser;
     }
 
     public void displayView() {
@@ -132,10 +140,12 @@ public class Controller {
     private void saveFile() {
         if (fileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            // Force the extension type
-            if (!file.getAbsolutePath().toLowerCase().endsWith(".txt")) {
+
+            // Force the extension
+            if (!file.getName().endsWith(".txt")) {
                 file = new File(file + ".txt");
             }
+
             // Write on file
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(file), "utf-8"))) {
@@ -146,7 +156,7 @@ public class Controller {
                     for (int j = 0; j < columnCount; ++j) {
                         writer.write(tableModel.getValueAt(i, j).toString());
                         if (j != columnCount-1) {
-                            writer.write(" ");
+                            writer.write("\t");
                         }
                     }
                     writer.write("\n");
@@ -158,7 +168,58 @@ public class Controller {
     }
 
     private void uploadFile() {
+        if (fileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
+                // By reading lines it forces the data structure to be exact
+                // That helps to identify not compatible data better
+                String line;
+                boolean flag = false;
+                Vector<BudgetItem> budgetItems = new Vector<>();
+                while ((line = reader.readLine()) != null) {
+                    String[] components = line.split("\t");
+                    if (components.length != 3) {
+                        flag = true;
+                        break;
+                    }
+                    // Not using already created methods because of different error handling and efficiency reasons (and laziness to refactor)
+                    LocalDate date;
+                    // Date format check
+                    try {
+                        date = LocalDate.parse(components[0]);
+                    } catch (DateTimeParseException dtpe) {
+                        flag = true;
+                        break;
+                    }
 
+                    String description = components[1];
+
+                    BigDecimal amount;
+                    // Amount format check
+                    try {
+                        amount = new BigDecimal(components[2]);
+                    } catch (NumberFormatException nfe) {
+                        flag = true;
+                        break;
+                    }
+                    budgetItems.add(new BudgetItem(date, description, amount));
+                }
+                if (flag) {
+                    JOptionPane.showMessageDialog(view.getFrame(), "File contains incompatible data", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // Clear table model
+                    model.getTableModel().setRowCount(0);
+                    // Add new items to table model
+                    for (int i = 0; i < budgetItems.size(); ++i) {
+                        BudgetItem item = budgetItems.get(i);
+                        model.addRow(item);
+                    }
+                    updateValueAmountLabel();
+                }
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void exportFile() {

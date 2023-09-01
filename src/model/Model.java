@@ -13,6 +13,7 @@ public class Model {
         tableModel = new DefaultTableModel(columnNames, 0);
     }
 
+    /*
     public Model(Vector<BudgetItem> budgetItems) {
         this();
         for (int i = 0; i < budgetItems.size(); ++i) {
@@ -20,6 +21,7 @@ public class Model {
             addRow(item);
         }
     }
+    */
 
     public DefaultTableModel getTableModel() {
         return tableModel;
