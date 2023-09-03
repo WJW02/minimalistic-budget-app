@@ -167,6 +167,9 @@ public class Controller {
     }
 
     private void automaticSaveFile() {
+        if (model.getTableModel().getRowCount() == 0) {
+            return;
+        }
         File file = new File("tmp" + File.separator + "backup.txt");
         saveFile(file);
     }

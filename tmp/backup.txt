@@ -13,3 +13,4 @@
 2023-09-03	Neflix subscription	-7.99
 2023-09-08	Groceries	-72.30
 2023-09-14	Train seasonal ticket	-60
+2023-09-03	ciaone	12
