@@ -1,0 +1,15 @@
+2023-07-31	Paycheck	1500
+2023-08-01	Rent	-400
+2023-08-01	Utility bills	-176.50
+2023-08-03	Netflix subscription	-7.99
+2023-08-09	Movie night	-16
+2023-08-14	Train seasonal ticket	-60
+2023-08-17	Groceries	-82.50
+2023-08-26	Groceries	-53.20
+2023-08-30	Gym	-50
+2023-08-31	Paycheck	1500
+2023-09-01	Rent	-400
+2023-09-01	Utility bills	-182.80
+2023-09-03	Neflix subscription	-7.99
+2023-09-08	Groceries	-72.30
+2023-09-14	Train seasonal ticket	-60

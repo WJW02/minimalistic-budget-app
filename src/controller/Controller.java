@@ -15,10 +15,8 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Vector;
+import java.util.*;
+import java.util.Timer;
 
 public class Controller {
     private Model model;
@@ -26,6 +24,8 @@ public class Controller {
     int searchRowIndex;
     String previousSearch;
     JFileChooser fileChooser;
+    Timer automaticSaveTimer;
+    TimerTask automaticSaveTimerTask;
 
     public Controller(Model model, View view) {
         this.model = model;
@@ -38,13 +38,21 @@ public class Controller {
         applyDate();
         previousSearch = "";
         fileChooser = initFileChooser();
+        automaticSaveTimer = new Timer();
+        automaticSaveTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                automaticSaveFile();
+            }
+        };
+        automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
     }
 
     private void addActionListeners() {
         view.getSaveFileButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveFile();
+                manualSaveFile();
             }
         });
         view.getUploadFileButton().addActionListener(new ActionListener() {
@@ -137,7 +145,33 @@ public class Controller {
         view.display();
     }
 
-    private void saveFile() {
+    private void saveFile(File file) {
+        // Write on file
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file), "utf-8"))) {
+            DefaultTableModel tableModel = model.getTableModel();
+            int rowCount = tableModel.getRowCount();
+            int columnCount = tableModel.getColumnCount();
+            for (int i = 0; i < rowCount; ++i) {
+                for (int j = 0; j < columnCount; ++j) {
+                    writer.write(tableModel.getValueAt(i, j).toString());
+                    if (j != columnCount - 1) {
+                        writer.write("\t");
+                    }
+                }
+                writer.write("\n");
+            }
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void automaticSaveFile() {
+        File file = new File("tmp" + File.separator + "backup.txt");
+        saveFile(file);
+    }
+
+    private void manualSaveFile() {
         if (fileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
 
@@ -145,25 +179,7 @@ public class Controller {
             if (!file.getName().endsWith(".txt")) {
                 file = new File(file + ".txt");
             }
-
-            // Write on file
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(file), "utf-8"))) {
-                DefaultTableModel tableModel = model.getTableModel();
-                int rowCount = tableModel.getRowCount();
-                int columnCount = tableModel.getColumnCount();
-                for (int i = 0; i < rowCount; ++i) {
-                    for (int j = 0; j < columnCount; ++j) {
-                        writer.write(tableModel.getValueAt(i, j).toString());
-                        if (j != columnCount-1) {
-                            writer.write("\t");
-                        }
-                    }
-                    writer.write("\n");
-                }
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            saveFile(file);
         }
     }
 
