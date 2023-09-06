@@ -201,47 +201,20 @@ public class Controller {
         view.display();
     }
 
-    private void saveFile(File file) {
-        // Write on file
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(file), "utf-8"))) {
-            DefaultTableModel tableModel = model.getTableModel();
-            int rowCount = tableModel.getRowCount();
-            int columnCount = tableModel.getColumnCount();
-            for (int i = 0; i < rowCount; ++i) {
-                for (int j = 0; j < columnCount; ++j) {
-                    writer.write(tableModel.getValueAt(i, j).toString());
-                    if (j != columnCount - 1) {
-                        writer.write("\t");
-                    }
-                }
-                writer.write("\n");
-            }
-        } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void automaticSaveFile() {
         if (model.getTableModel().getRowCount() == 0) {
             return;
         }
         File file = new File("tmp" + File.separator + "backup.txt");
-        saveFile(file);
+        CustomTXTWriter writer = new CustomTXTWriter();
+        writer.write(model, view, file);
     }
 
     private void manualSaveFile() {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = getSelectedFileWithExtension(saveUploadFileChooser);
-            /*
-            File file = fileChooser.getSelectedFile();
-
-            // Force the extension
-            if (!file.getName().endsWith(".txt")) {
-                file = new File(file + ".txt");
-            }
-             */
-            // saveFile(file);
+            CustomTXTWriter writer = new CustomTXTWriter();
+            writer.write(model, view, file);
         }
     }
 
