@@ -134,9 +134,9 @@ public class Controller {
                     file = new File(file + ".csv");
                 }
                 break;
-            case "ODF file":
-                if (!file.getName().endsWith(".odf")) {
-                    file = new File(file + ".odf");
+            case "ODS file":
+                if (!file.getName().endsWith(".ods")) {
+                    file = new File(file + ".ods");
                 }
                 break;
             default:
@@ -151,12 +151,6 @@ public class Controller {
             @Override
             public void approveSelection() {
                 File file = getSelectedFileWithExtension(this);
-
-                /*
-                if (!file.getName().endsWith(".txt")) {
-                    file = new File(file + ".txt");
-                }
-                 */
                 if (file.exists() && getDialogType() == SAVE_DIALOG) {
                     int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
                     if (result != JOptionPane.YES_OPTION) {
@@ -193,7 +187,7 @@ public class Controller {
         exportFileChooser.removeChoosableFileFilter(exportFileChooser.getFileFilter());  //remove the default file filter
         exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV file", "csv"));
         exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("TEXT file", "txt"));
-        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODF file", "odf"));
+        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODS file", "ods"));
         return exportFileChooser;
     }
 
@@ -286,11 +280,13 @@ public class Controller {
             switch (extension) {
                 case ".csv":
                     writer = new CustomCSVWriter();
+                    break;
                 case ".txt":
                     writer = new CustomTXTWriter();
                     break;
-                case ".odf":
-                    return;
+                case ".ods":
+                    writer = new CustomODSWriter();
+                    break;
                 default:
                     JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
