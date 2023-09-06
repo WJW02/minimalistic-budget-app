@@ -23,7 +23,12 @@ public class Controller {
     private View view;
     int searchRowIndex;
     String previousSearch;
-    JFileChooser fileChooser;
+    /* saveUploadFileChooser separated from exportFileChooser because:
+     *  - Different file filters options
+     *  - Default file save name = uploaded file
+     */
+    JFileChooser saveUploadFileChooser;
+    JFileChooser exportFileChooser;
     Timer automaticSaveTimer;
     TimerTask automaticSaveTimerTask;
 
@@ -37,7 +42,8 @@ public class Controller {
         addActionListeners();
         applyDate();
         previousSearch = "";
-        fileChooser = initFileChooser();
+        saveUploadFileChooser = initSaveUploadFileChooser();
+        exportFileChooser = initExportFileChooser();
         automaticSaveTimer = new Timer();
         automaticSaveTimerTask = new TimerTask() {
             @Override
@@ -114,14 +120,43 @@ public class Controller {
         });
     }
 
-    private JFileChooser initFileChooser() {
-        JFileChooser fileChooser = new JFileChooser() {
-            @Override
-            public void approveSelection() {
-                File file = getSelectedFile();
+    private File getSelectedFileWithExtension(JFileChooser fileChooser) {
+        File file = fileChooser.getSelectedFile();
+        String fileDescription = fileChooser.getFileFilter().getDescription();
+        switch (fileDescription) {
+            case "TEXT file":
                 if (!file.getName().endsWith(".txt")) {
                     file = new File(file + ".txt");
                 }
+                break;
+            case "CVS file":
+                if (!file.getName().endsWith(".cvs")) {
+                    file = new File(file + ".cvs");
+                }
+                break;
+            case "ODF file":
+                if (!file.getName().endsWith(".odf")) {
+                    file = new File(file + ".odf");
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+        return file;
+    }
+
+    private JFileChooser initSaveUploadFileChooser() {
+        JFileChooser saveUploadFileChooser = new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                File file = getSelectedFileWithExtension(this);
+
+                /*
+                if (!file.getName().endsWith(".txt")) {
+                    file = new File(file + ".txt");
+                }
+                 */
                 if (file.exists() && getDialogType() == SAVE_DIALOG) {
                     int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
                     if (result != JOptionPane.YES_OPTION) {
@@ -135,10 +170,31 @@ public class Controller {
                 super.approveSelection();
             }
         };
-        fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());  //remove the default file filter
+        saveUploadFileChooser.removeChoosableFileFilter(saveUploadFileChooser.getFileFilter());  //remove the default file filter
         FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT file", "txt");
-        fileChooser.addChoosableFileFilter(filter);
-        return fileChooser;
+        saveUploadFileChooser.addChoosableFileFilter(filter);
+        return saveUploadFileChooser;
+    }
+
+    public JFileChooser initExportFileChooser() {
+        JFileChooser exportFileChooser = new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                File file = getSelectedFileWithExtension(this);
+                if (file.exists() && getDialogType() == SAVE_DIALOG) {
+                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
+                    if (result != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                }
+                super.approveSelection();
+            }
+        };
+        exportFileChooser.removeChoosableFileFilter(exportFileChooser.getFileFilter());  //remove the default file filter
+        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV file", "csv"));
+        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("TEXT file", "txt"));
+        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODF file", "odf"));
+        return exportFileChooser;
     }
 
     public void displayView() {
@@ -175,20 +231,23 @@ public class Controller {
     }
 
     private void manualSaveFile() {
-        if (fileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+        if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+            File file = getSelectedFileWithExtension(saveUploadFileChooser);
+            /*
             File file = fileChooser.getSelectedFile();
 
             // Force the extension
             if (!file.getName().endsWith(".txt")) {
                 file = new File(file + ".txt");
             }
-            saveFile(file);
+             */
+            // saveFile(file);
         }
     }
 
     private void uploadFile() {
-        if (fileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
+        if (saveUploadFileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+            File file = saveUploadFileChooser.getSelectedFile();
             try (BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
                 // By reading lines it forces the data structure to be exact
                 // That helps to identify not compatible data better
@@ -242,7 +301,30 @@ public class Controller {
     }
 
     private void exportFile() {
-
+        // Show FileChooser (that is set to show 3 filters)
+        if (exportFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
+            File file = getSelectedFileWithExtension(exportFileChooser);
+            // Get selected file
+            // Check what filter was chosen:
+            //  - Force the extension based on the filter chosen
+            //  - Create the exporter based on the filter chosen
+            String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
+            CustomWriter writer;
+            switch (extension) {
+                case ".csv":
+                    return;
+                case ".txt":
+                    writer = new CustomTXTWriter();
+                    break;
+                case ".odf":
+                    return;
+                default:
+                    JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+            }
+            // Export (Write to file) (Polymorphism)
+            writer.write(model, view, file);
+        }
     }
 
     private void printFile() {
@@ -272,9 +354,7 @@ public class Controller {
         // Empty fields check
         if (view.getDateTextField().getText().equals("") || view.getDescriptionTextField().getText().equals("") || view.getAmountTextField().getText().equals("")) {
             if (view.getDateTextField().getText().equals("") && !view.getDescriptionTextField().getText().equals("") && !view.getAmountTextField().getText().equals("")) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = new Date();
-                view.getDateTextField().setText(formatter.format(date));
+                view.getDateTextField().setText(LocalDate.now().toString());
             }
             else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
