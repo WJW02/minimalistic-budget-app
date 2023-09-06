@@ -129,9 +129,9 @@ public class Controller {
                     file = new File(file + ".txt");
                 }
                 break;
-            case "CVS file":
-                if (!file.getName().endsWith(".cvs")) {
-                    file = new File(file + ".cvs");
+            case "CSV file":
+                if (!file.getName().endsWith(".csv")) {
+                    file = new File(file + ".csv");
                 }
                 break;
             case "ODF file":
@@ -285,7 +285,7 @@ public class Controller {
             CustomWriter writer;
             switch (extension) {
                 case ".csv":
-                    return;
+                    writer = new CustomCSVWriter();
                 case ".txt":
                     writer = new CustomTXTWriter();
                     break;

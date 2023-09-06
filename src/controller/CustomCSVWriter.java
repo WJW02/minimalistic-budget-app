@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
 
-public class CustomTXTWriter implements CustomWriter {
+public class CustomCSVWriter implements CustomWriter {
 
     @Override
     public void write(Model model, View view, File file) {
@@ -20,7 +20,7 @@ public class CustomTXTWriter implements CustomWriter {
                 for (int j = 0; j < columnCount; ++j) {
                     writer.write(tableModel.getValueAt(i, j).toString());
                     if (j != columnCount - 1) {
-                        writer.write("\t");
+                        writer.write(",");
                     }
                 }
                 writer.write("\n");
