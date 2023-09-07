@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.Timer;
+import java.awt.print.*;
 
 public class Controller {
     private Model model;
@@ -271,10 +272,8 @@ public class Controller {
         // Show FileChooser (that is set to show 3 filters)
         if (exportFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = getSelectedFileWithExtension(exportFileChooser);
-            // Get selected file
-            // Check what filter was chosen:
-            //  - Force the extension based on the filter chosen
-            //  - Create the exporter based on the filter chosen
+
+            // Check file's extension and assign the correct writer based on the filter chosen
             String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
             CustomWriter writer;
             switch (extension) {
@@ -291,13 +290,22 @@ public class Controller {
                     JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
             }
-            // Export (Write to file) (Polymorphism)
+            // Export (Polymorphism)
             writer.write(model, view, file);
         }
     }
 
     private void printFile() {
-
+        try {
+            boolean complete = view.getTable().print();
+            if (complete) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Print success", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(view.getFrame(), "Printing paused with error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (PrinterException pe) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Printing paused with error", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void clearOperationalTextFields() {
@@ -316,7 +324,7 @@ public class Controller {
             totalValue = totalValue.add(value);
         }
 
-        view.getValueAmountLabel().setText(String.valueOf(totalValue) + "€");
+        view.getValueAmountLabel().setText(totalValue + "€");
     }
 
     private BudgetItem createBudgetItem() {
