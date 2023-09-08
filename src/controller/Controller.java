@@ -10,6 +10,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -35,6 +37,7 @@ public class Controller {
     Timer automaticSaveTimer;
     TimerTask automaticSaveTimerTask;
     String currentFile;
+    boolean isSaveUpToDate;
 
     public Controller(Model model, View view) {
         this.model = model;
@@ -43,21 +46,16 @@ public class Controller {
     }
 
     private void init() {
+        initFrame();
         addActionListeners();
         applyDate();
         previousSearch = "";
         saveUploadFileChooser = initSaveUploadFileChooser();
         exportFileChooser = initExportFileChooser();
-        automaticSaveTimer = new Timer();
-        automaticSaveTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                automaticSaveFile();
-            }
-        };
-        automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
+        initAutomaticSaveTimer();
         initTable();
         currentFile = "";
+        isSaveUpToDate = true;
     }
 
     private void addActionListeners() {
@@ -126,6 +124,46 @@ public class Controller {
         });
     }
 
+    /*
+    private boolean isSaveUpToDate() {
+        if (model.getTableModel().getRowCount() == 0) {
+            return true;
+        }
+        if (currentFile.equals("")) {
+            return false;
+        }
+        CustomTXTReader reader = new CustomTXTReader();
+        File file = new File(currentFile);
+        Model tmpModel = new Model();
+        try {
+            if (reader.read(file, tmpModel)) {
+                if (model.equals(tmpModel)) {
+                    return true;
+                }
+            }
+        } catch (IOException ioe) {
+            // Previous save has been moved or been corrupted
+        }
+        return false;
+    }
+     */
+
+    private void initFrame() {
+        view.getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        view.getFrame().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (!isSaveUpToDate) {
+                    int result = JOptionPane.showConfirmDialog(view.getFrame(), "You haven't saved your changes. Are you sure you want to exit?", "Warning", JOptionPane.YES_NO_OPTION);
+                    if (result != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                }
+                System.exit(0);
+            }
+        });
+    }
+
     private File getSelectedFileWithExtension(JFileChooser fileChooser) {
         File file = fileChooser.getSelectedFile();
         String fileDescription = fileChooser.getFileFilter().getDescription();
@@ -157,15 +195,19 @@ public class Controller {
             @Override
             public void approveSelection() {
                 File file = getSelectedFileWithExtension(this);
-                if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
+                if (getDialogType() == SAVE_DIALOG && file.exists()) {
+                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Warning", JOptionPane.YES_NO_OPTION);
                     if (result != JOptionPane.YES_OPTION) {
                         return;
                     }
-                }
-                else if (!file.exists() && getDialogType() == OPEN_DIALOG) {
+                } else if (getDialogType() == OPEN_DIALOG && !file.exists()) {
                     JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
+                } else if (getDialogType() == OPEN_DIALOG && !isSaveUpToDate) {
+                    int result = JOptionPane.showConfirmDialog(view.getFrame(), "You haven't saved your changes. Are you sure you want to upload another save?", "Warning", JOptionPane.YES_NO_OPTION);
+                    if (result != JOptionPane.YES_OPTION) {
+                        return;
+                    }
                 }
                 super.approveSelection();
             }
@@ -182,7 +224,7 @@ public class Controller {
             public void approveSelection() {
                 File file = getSelectedFileWithExtension(this);
                 if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Error", JOptionPane.YES_NO_OPTION);
+                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Warning", JOptionPane.YES_NO_OPTION);
                     if (result != JOptionPane.YES_OPTION) {
                         return;
                     }
@@ -195,6 +237,17 @@ public class Controller {
         exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("TEXT file", "txt"));
         exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODS file", "ods"));
         return exportFileChooser;
+    }
+
+    private void initAutomaticSaveTimer() {
+        automaticSaveTimer = new Timer();
+        automaticSaveTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                automaticSaveFile();
+            }
+        };
+        automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
     }
 
     private void fillOperationalTextFields() {
@@ -236,7 +289,7 @@ public class Controller {
         try {
             writer.write(model, view, file);
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view.getFrame(), "Auto-save failed", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -246,9 +299,13 @@ public class Controller {
             CustomTXTWriter writer = new CustomTXTWriter();
             try {
                 writer.write(model, view, file);
+                System.out.println("Scritto");
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            currentFile = file.getAbsolutePath();
+            isSaveUpToDate = true;
         }
     }
 
@@ -301,6 +358,7 @@ public class Controller {
                     }
                     updateValueAmountLabel();
                     currentFile = file.getAbsolutePath();
+                    isSaveUpToDate = true;
                 }
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
@@ -327,7 +385,7 @@ public class Controller {
                     writer = new CustomODSWriter();
                     break;
                 default:
-                    JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view.getFrame(), "Not covered file format", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
             }
             // Export (Polymorphism)
@@ -404,6 +462,7 @@ public class Controller {
         // Clear operational text fields
         view.getDescriptionTextField().setText("");
         view.getAmountTextField().setText("");
+        isSaveUpToDate = false;
     }
 
     private int convertRowIndexToModel() {
@@ -420,6 +479,7 @@ public class Controller {
         if (modelRowIndex != -1) {
             model.getTableModel().removeRow(modelRowIndex);
             updateValueAmountLabel();
+            isSaveUpToDate = false;
         }
     }
 
@@ -432,6 +492,7 @@ public class Controller {
                 model.getTableModel().setValueAt(item.getDescription(), modelRowIndex, 1);
                 model.getTableModel().setValueAt(item.getAmount(), modelRowIndex, 2);
                 updateValueAmountLabel();
+                isSaveUpToDate = false;
             }
         }
     }

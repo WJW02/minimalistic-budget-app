@@ -22,6 +22,6 @@ public class CustomTXTWriter implements CustomWriter {
             }
             writer.write("\n");
         }
-
+        writer.close();
     }
 }

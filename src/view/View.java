@@ -81,7 +81,6 @@ public class View {
         frame.setBounds(100, 100, 1024, 768);
         frame.setMinimumSize(new Dimension(1024, 768));
         frame.add(gui);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void createHeader() {

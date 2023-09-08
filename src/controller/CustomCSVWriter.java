@@ -22,5 +22,6 @@ public class CustomCSVWriter implements CustomWriter {
             }
             writer.write("\n");
         }
+        writer.close();
     }
 }

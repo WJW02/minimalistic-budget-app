@@ -37,4 +37,22 @@ public class Model {
         tableModel.addRow(new Object[]{item.getDate(), item.getDescription(), item.getAmount()});
     }
 
+    public boolean equals(Model model) {
+        DefaultTableModel tableModel1 = this.getTableModel();
+        DefaultTableModel tableModel2 = model.getTableModel();
+        if (tableModel1.getRowCount() != tableModel2.getRowCount()) {
+            return false;
+        }
+        for (int row = 0; row < tableModel1.getRowCount(); ++row) {
+            for (int col = 0; col < tableModel1.getColumnCount(); ++col) {
+                String value1 = tableModel1.getValueAt(row, col).toString();
+                String value2 = tableModel2.getValueAt(row, col).toString();
+                if (!value1.equals(value2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
