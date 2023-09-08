@@ -297,12 +297,7 @@ public class Controller {
 
     private void printFile() {
         try {
-            boolean complete = view.getTable().print();
-            if (complete) {
-                JOptionPane.showMessageDialog(view.getFrame(), "Print success", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(view.getFrame(), "Printing paused with error", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            view.getTable().print();
         } catch (PrinterException pe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Printing paused with error", "Error", JOptionPane.ERROR_MESSAGE);
         }
