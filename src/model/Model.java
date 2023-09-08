@@ -10,7 +10,13 @@ public class Model {
     private String[] columnNames = {"Date", "Description", "Amount"};
 
     public Model() {
-        tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make all cells non-editable
+                return false;
+            }
+        };
     }
 
     /*

@@ -344,7 +344,7 @@ public class Controller {
         try {
             date = LocalDate.parse(view.getDateTextField().getText());
         } catch (DateTimeParseException dtpe) {
-            JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid date", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid date (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
 
@@ -418,7 +418,7 @@ public class Controller {
                 try {
                     fromDate = LocalDate.parse(view.getStartDateTextField().getText());
                 } catch (DateTimeParseException dtpe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 string1 = view.getStartDateTextField().getText();
@@ -440,7 +440,7 @@ public class Controller {
                 try {
                     toDate = LocalDate.parse(view.getEndDateTextField().getText());
                 } catch (DateTimeParseException dtpe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 string2 = view.getEndDateTextField().getText();
@@ -467,7 +467,7 @@ public class Controller {
     }
 
     private void search() {
-        String key = view.getSearchBar().getText();
+        String key = view.getSearchBar().getText().toLowerCase();
         if (key.equals("")) {
             view.getTable().clearSelection();
             searchRowIndex = 0;
@@ -488,7 +488,7 @@ public class Controller {
         for (; searchRowIndex < rowCount; ++searchRowIndex) {
             int modelRowIndex = view.getSorter().convertRowIndexToModel(searchRowIndex);
             for (int searchColumnIndex = 0; searchColumnIndex < columnCount; ++searchColumnIndex) {
-                String s = model.getTableModel().getValueAt(modelRowIndex, searchColumnIndex).toString();
+                String s = model.getTableModel().getValueAt(modelRowIndex, searchColumnIndex).toString().toLowerCase();
                 if (s.contains(key)) {
                     view.getTable().changeSelection(searchRowIndex, searchColumnIndex, false, false);
                     ++searchRowIndex;
