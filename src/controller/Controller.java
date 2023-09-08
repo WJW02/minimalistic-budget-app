@@ -414,26 +414,40 @@ public class Controller {
             Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
             RowFilter<DefaultTableModel, Integer> fromDateFilter;
             if (!view.getStartDateTextField().getText().equals("")) {
-                 fromDateFilter = new RowFilter<DefaultTableModel, Integer>() {
+                LocalDate fromDate;
+                try {
+                    fromDate = LocalDate.parse(view.getStartDateTextField().getText());
+                } catch (DateTimeParseException dtpe) {
+                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                string1 = view.getStartDateTextField().getText();
+                fromDateFilter = new RowFilter<DefaultTableModel, Integer>() {
                     @Override
                     public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
                         LocalDate dateValue = (LocalDate) entry.getValue(0);
-                        LocalDate fromDate = LocalDate.parse(view.getStartDateTextField().getText());
                         return dateValue.isAfter(fromDate) || dateValue.isEqual(fromDate);
                     }
-                 };
-                 dateFilters.add(fromDateFilter);
+                };
+                dateFilters.add(fromDateFilter);
             } else {
                 string1 = "****-**-**";
             }
 
             RowFilter<DefaultTableModel, Integer> toDateFilter;
             if (!view.getEndDateTextField().getText().equals("")) {
+                LocalDate toDate;
+                try {
+                    toDate = LocalDate.parse(view.getEndDateTextField().getText());
+                } catch (DateTimeParseException dtpe) {
+                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                string2 = view.getEndDateTextField().getText();
                 toDateFilter = new RowFilter<DefaultTableModel, Integer>() {
                     @Override
                     public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
                         LocalDate dateValue = (LocalDate) entry.getValue(0);
-                        LocalDate toDate = LocalDate.parse(view.getEndDateTextField().getText());
                         return dateValue.isBefore(toDate) || dateValue.isEqual(toDate);
                     }
                 };
