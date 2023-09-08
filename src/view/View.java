@@ -106,6 +106,10 @@ public class View {
         exportFileButton.setBorder(null);
         printFileButton.setBorder(null);
 
+        saveFileButton.setToolTipText("Save");
+        uploadFileButton.setToolTipText("Upload");
+        exportFileButton.setToolTipText("Export");
+        printFileButton.setToolTipText("Print");
 
         /*
         Dimension buttonSize = new Dimension(79, 64);
