@@ -6,6 +6,6 @@ import view.View;
 import java.io.*;
 
 interface CustomWriter {
-    void write(Model model, View view, File file);
+    void write(Model model, View view, File file) throws IOException;
 
 }

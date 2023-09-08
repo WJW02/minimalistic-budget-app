@@ -34,6 +34,7 @@ public class Controller {
     JFileChooser exportFileChooser;
     Timer automaticSaveTimer;
     TimerTask automaticSaveTimerTask;
+    String currentFile;
 
     public Controller(Model model, View view) {
         this.model = model;
@@ -56,6 +57,7 @@ public class Controller {
         };
         automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
         initTable();
+        currentFile = "";
     }
 
     private void addActionListeners() {
@@ -231,14 +233,22 @@ public class Controller {
         }
         File file = new File("tmp" + File.separator + "backup.txt");
         CustomTXTWriter writer = new CustomTXTWriter();
-        writer.write(model, view, file);
+        try {
+            writer.write(model, view, file);
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void manualSaveFile() {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = getSelectedFileWithExtension(saveUploadFileChooser);
             CustomTXTWriter writer = new CustomTXTWriter();
-            writer.write(model, view, file);
+            try {
+                writer.write(model, view, file);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -290,6 +300,7 @@ public class Controller {
                         model.addRow(item);
                     }
                     updateValueAmountLabel();
+                    currentFile = file.getAbsolutePath();
                 }
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
@@ -320,7 +331,11 @@ public class Controller {
                     return;
             }
             // Export (Polymorphism)
-            writer.write(model, view, file);
+            try {
+                writer.write(model, view, file);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
