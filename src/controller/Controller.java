@@ -4,6 +4,8 @@ import model.Model;
 import view.View;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -53,6 +55,7 @@ public class Controller {
             }
         };
         automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
+        initTable();
     }
 
     private void addActionListeners() {
@@ -192,6 +195,32 @@ public class Controller {
         return exportFileChooser;
     }
 
+    private void fillOperationalTextFields() {
+        JTable table = view.getTable();
+        int selectedRowIndex;
+        if ((selectedRowIndex = table.getSelectedRow()) == -1) {
+            view.getDateTextField().setText("");
+            view.getDescriptionTextField().setText("");
+            view.getAmountTextField().setText("");
+            return;
+        }
+        // Fill the operational text fields with the content of the selected row
+        view.getDateTextField().setText(table.getValueAt(selectedRowIndex, 0).toString());
+        view.getDescriptionTextField().setText(table.getValueAt(selectedRowIndex, 1).toString());
+        view.getAmountTextField().setText(table.getValueAt(selectedRowIndex, 2).toString());
+    }
+
+    private void initTable() {
+        view.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    fillOperationalTextFields();
+                }
+            }
+        });
+    }
+
     public void displayView() {
         view.display();
     }
@@ -303,12 +332,6 @@ public class Controller {
         }
     }
 
-    private void clearOperationalTextFields() {
-        // view.getDateTextField().setText("");
-        view.getDescriptionTextField().setText("");
-        view.getAmountTextField().setText("");
-    }
-
     private void updateValueAmountLabel() {
         BigDecimal totalValue = new BigDecimal(0);
         int rowCount = view.getSorter().getViewRowCount();
@@ -353,7 +376,6 @@ public class Controller {
             JOptionPane.showMessageDialog(view.getFrame(), "Enter a valid amount", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
-        clearOperationalTextFields();
         return new BudgetItem(date, description, amount);
     }
 
@@ -364,6 +386,9 @@ public class Controller {
         }
         model.addRow(item);
         updateValueAmountLabel();
+        // Clear operational text fields
+        view.getDescriptionTextField().setText("");
+        view.getAmountTextField().setText("");
     }
 
     private int convertRowIndexToModel() {
@@ -486,6 +511,7 @@ public class Controller {
                 String s = model.getTableModel().getValueAt(modelRowIndex, searchColumnIndex).toString().toLowerCase();
                 if (s.contains(key)) {
                     view.getTable().changeSelection(searchRowIndex, searchColumnIndex, false, false);
+                    fillOperationalTextFields();
                     ++searchRowIndex;
                     return;
                 }
