@@ -116,7 +116,7 @@ public class Controller {
                 search();
             }
         });
-        view.getClearButton().addActionListener(new ActionListener() {
+        view.getClearSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clear();

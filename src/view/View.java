@@ -42,17 +42,19 @@ public class View {
     private JPanel calendarPanel1;
     private JPanel calendarPanel2;
     private JPanel calendarPanel3;
+    private JPanel calendarPanel4;
     private JLabel startDateLabel;
     private JLabel endDateLabel;
     private JTextField startDateTextField;
     private JTextField endDateTextField;
     private JButton applyDateButton;
+    private JButton clearDateButton;
     // search panel components
     private JPanel searchPanel;
     private JPanel searchPanel1;
     private JTextField searchBar;
     private JButton searchButton;
-    private JButton clearButton;
+    private JButton clearSearchButton;
 
     // body components
     private JPanel mainPanel;
@@ -226,10 +228,12 @@ public class View {
         calendarPanel1 = new JPanel();
         calendarPanel2 = new JPanel();
         calendarPanel3 = new JPanel();
+        calendarPanel4 = new JPanel();
         calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
         calendarPanel1.setLayout(new BoxLayout(calendarPanel1, BoxLayout.X_AXIS));
         calendarPanel2.setLayout(new BoxLayout(calendarPanel2, BoxLayout.Y_AXIS));
         calendarPanel3.setLayout(new BoxLayout(calendarPanel3, BoxLayout.Y_AXIS));
+        calendarPanel4.setLayout(new BoxLayout(calendarPanel4, BoxLayout.X_AXIS));
 
         startDateLabel = new JLabel("Start date");
         endDateLabel = new JLabel("End date");
@@ -250,6 +254,7 @@ public class View {
         calendarPanel1.setOpaque(false);
         calendarPanel2.setOpaque(false);
         calendarPanel3.setOpaque(false);
+        calendarPanel4.setOpaque(false);
 
         calendarPanel2.add(startDateLabel);
         calendarPanel2.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -259,6 +264,11 @@ public class View {
         calendarPanel3.add(endDateTextField);
 
         applyDateButton = new JButton("Apply");
+        clearDateButton = new JButton("Clear");
+
+        calendarPanel4.add(applyDateButton);
+        calendarPanel4.add(Box.createRigidArea(new Dimension(5, 0)));
+        calendarPanel4.add(clearDateButton);
 
         calendarPanel1.add(calendarPanel2);
         calendarPanel1.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -266,7 +276,7 @@ public class View {
         calendarPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Calendar",0,0, new Font("Arial", Font.BOLD, 14), Color.WHITE), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         calendarPanel.add(calendarPanel1);
         calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        calendarPanel.add(applyDateButton);
+        calendarPanel.add(calendarPanel4);
     }
 
     private void createSearchPanel() {
@@ -278,7 +288,7 @@ public class View {
         searchBar = new JTextField("", 24);
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchBar.getPreferredSize().height));
         searchButton = new JButton("Search");
-        clearButton = new JButton("Clear");
+        clearSearchButton = new JButton("Clear");
 
         searchPanel.setOpaque(false);
         searchPanel1.setOpaque(false);
@@ -288,7 +298,7 @@ public class View {
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         searchPanel1.add(searchButton);
         searchPanel1.add(Box.createRigidArea(new Dimension(5, 0)));
-        searchPanel1.add(clearButton);
+        searchPanel1.add(clearSearchButton);
         searchPanel.add(searchPanel1);
     }
 
@@ -469,12 +479,12 @@ public class View {
         this.searchButton = searchButton;
     }
 
-    public JButton getClearButton() {
-        return clearButton;
+    public JButton getClearSearchButton() {
+        return clearSearchButton;
     }
 
-    public void setClearButton(JButton clearButton) {
-        this.clearButton = clearButton;
+    public void setClearSeachButton(JButton clearSearchButton) {
+        this.clearSearchButton = clearSearchButton;
     }
 
     public JLabel getTimeFrameLabel() {
