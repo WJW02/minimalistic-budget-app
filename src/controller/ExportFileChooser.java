@@ -15,6 +15,10 @@ public class ExportFileChooser extends JFileChooser implements CustomFileChooser
     @Override
     public void approveSelection() {
         File file = getSelectedFileWithExtension();
+        if (file == null) {
+            JOptionPane.showMessageDialog(this, "This file type is not supported", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if (file.exists() && getDialogType() == SAVE_DIALOG) {
             int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Warning", JOptionPane.YES_NO_OPTION);
             if (result != JOptionPane.YES_OPTION) {

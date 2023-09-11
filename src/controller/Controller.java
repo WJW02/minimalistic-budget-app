@@ -303,14 +303,14 @@ public class Controller {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = saveUploadFileChooser.getSelectedFileWithExtension();
             if (file == null) {
-                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view.getFrame(), "This file type is not supported", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             CustomTXTWriter writer = new CustomTXTWriter();
             try {
                 writer.write(model, view, file);
             } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(saveUploadFileChooser, "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             isSaveUpToDate = true;
@@ -331,7 +331,7 @@ public class Controller {
                     JOptionPane.showMessageDialog(view.getFrame(), "File contains incompatible data", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(saveUploadFileChooser, "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -342,7 +342,7 @@ public class Controller {
             File file = exportFileChooser.getSelectedFileWithExtension();
             // Check file's extension and assign the correct writer based on the filter chosen
             if (file == null) {
-                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view.getFrame(), "This file type is not supported", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
@@ -358,14 +358,14 @@ public class Controller {
                     writer = new CustomODSWriter();
                     break;
                 default:
-                    JOptionPane.showMessageDialog(view.getFrame(), "Not covered file format", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view.getFrame(), "This file type is not supported", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
             }
             // Export (Polymorphism)
             try {
                 writer.write(model, view, file);
             } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view.getFrame(), "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(exportFileChooser, "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
