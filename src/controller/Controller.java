@@ -110,6 +110,13 @@ public class Controller {
             }
         });
 
+        view.getClearDateButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearFilter();
+            }
+        });
+
         view.getSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +126,7 @@ public class Controller {
         view.getClearSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clear();
+                clearSelection();
             }
         });
     }
@@ -498,8 +505,8 @@ public class Controller {
     }
 
     private void applyDate() {
-        String string1 = "****-**-**";
-        String string2 = "****-**-**";
+        String string1;
+        String string2;
         if (view.getStartDateTextField().getText().equals("") && view.getEndDateTextField().getText().equals("")) {
             // Apply no filter
             string1 = "****-**-**";
@@ -562,6 +569,12 @@ public class Controller {
         view.getTimeFrameLabel().setText("From " + string1 + " To " + string2);
     }
 
+    private void clearFilter() {
+        view.getStartDateTextField().setText("");
+        view.getEndDateTextField().setText("");
+        applyDate();
+    }
+
     private void search() {
         String key = view.getSearchBar().getText().toLowerCase();
         if (key.equals("")) {
@@ -595,7 +608,7 @@ public class Controller {
         }
     }
 
-    private void clear() {
+    private void clearSelection() {
         view.getSearchBar().setText("");
         search();
     }

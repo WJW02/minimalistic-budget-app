@@ -463,6 +463,14 @@ public class View {
         this.applyDateButton = applyDateButton;
     }
 
+    public JButton getClearDateButton() {
+        return clearDateButton;
+    }
+
+    public void setClearDateButton(JButton clearDateButton) {
+        this.clearDateButton = clearDateButton;
+    }
+
     public JTextField getSearchBar() {
         return searchBar;
     }
