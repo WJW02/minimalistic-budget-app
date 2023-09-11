@@ -336,7 +336,6 @@ public class Controller {
         // Show FileChooser (that is set to show 3 filters)
         if (exportFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = getSelectedFileWithExtension(exportFileChooser);
-
             // Check file's extension and assign the correct writer based on the filter chosen
             String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
             CustomWriter writer;
@@ -380,7 +379,6 @@ public class Controller {
             BigDecimal value = (BigDecimal) model.getTableModel().getValueAt(modelRowIndex, 2);
             totalValue = totalValue.add(value);
         }
-
         view.getValueAmountLabel().setText(totalValue + "€");
     }
 
@@ -519,6 +517,15 @@ public class Controller {
             }
 
             // Apply filter
+            if (dateFilters.size() == 2)
+            {
+                LocalDate fromDate = LocalDate.parse(view.getStartDateTextField().getText());
+                LocalDate toDate = LocalDate.parse(view.getEndDateTextField().getText());
+                if (fromDate.isAfter(toDate)) {
+                    JOptionPane.showMessageDialog(view.getFrame(), "End date should come after the start date", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             view.getSorter().setRowFilter(RowFilter.andFilter(dateFilters));
         }
 
