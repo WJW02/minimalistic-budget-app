@@ -50,6 +50,7 @@ public class CustomTXTReader implements CustomReader {
             budgetItems.add(new BudgetItem(date, description, amount));
         }
         if (success) {
+            model.getTableModel().setRowCount(0);
             for (int i = 0; i < budgetItems.size(); ++i) {
                 BudgetItem item = budgetItems.get(i);
                 model.addRow(item);

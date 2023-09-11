@@ -1,4 +1,5 @@
 package controller;
+
 import model.BudgetItem;
 import model.Model;
 import view.View;
@@ -32,11 +33,10 @@ public class Controller {
      *  - Different file filters options
      *  - Default file save name = uploaded file
      */
-    JFileChooser saveUploadFileChooser;
-    JFileChooser exportFileChooser;
+    SaveUploadFileChooser saveUploadFileChooser;
+    ExportFileChooser exportFileChooser;
     Timer automaticSaveTimer;
     TimerTask automaticSaveTimerTask;
-    String currentFile;
     boolean isSaveUpToDate;
 
     public Controller(Model model, View view) {
@@ -50,12 +50,11 @@ public class Controller {
         addActionListeners();
         applyDate();
         previousSearch = "";
-        saveUploadFileChooser = initSaveUploadFileChooser();
-        exportFileChooser = initExportFileChooser();
+        isSaveUpToDate = true;
+        saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
+        exportFileChooser = new ExportFileChooser();
         initAutomaticSaveTimer();
         initTable();
-        currentFile = "";
-        isSaveUpToDate = true;
     }
 
     private void addActionListeners() {
@@ -169,6 +168,7 @@ public class Controller {
         });
     }
 
+    /*
     private File getSelectedFileWithExtension(JFileChooser fileChooser) {
         File file = fileChooser.getSelectedFile();
         String fileDescription = fileChooser.getFileFilter().getDescription();
@@ -243,6 +243,7 @@ public class Controller {
         exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODS file", "ods"));
         return exportFileChooser;
     }
+     */
 
     private void initAutomaticSaveTimer() {
         automaticSaveTimer = new Timer();
@@ -300,17 +301,20 @@ public class Controller {
 
     private void manualSaveFile() {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
-            File file = getSelectedFileWithExtension(saveUploadFileChooser);
+            File file = saveUploadFileChooser.getSelectedFileWithExtension();
+            if (file == null) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             CustomTXTWriter writer = new CustomTXTWriter();
             try {
                 writer.write(model, view, file);
-                System.out.println("Scritto");
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view.getFrame(), "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            currentFile = file.getAbsolutePath();
             isSaveUpToDate = true;
+            saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
         }
     }
 
@@ -321,8 +325,8 @@ public class Controller {
             try {
                 if (reader.read(file, model)) {
                     updateValueAmountLabel();
-                    currentFile = file.getAbsolutePath();
                     isSaveUpToDate = true;
+                    saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
                 } else {
                     JOptionPane.showMessageDialog(view.getFrame(), "File contains incompatible data", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -335,8 +339,12 @@ public class Controller {
     private void exportFile() {
         // Show FileChooser (that is set to show 3 filters)
         if (exportFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
-            File file = getSelectedFileWithExtension(exportFileChooser);
+            File file = exportFileChooser.getSelectedFileWithExtension();
             // Check file's extension and assign the correct writer based on the filter chosen
+            if (file == null) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
             CustomWriter writer;
             switch (extension) {
@@ -387,8 +395,7 @@ public class Controller {
         if (view.getDateTextField().getText().equals("") || view.getDescriptionTextField().getText().equals("") || view.getAmountTextField().getText().equals("")) {
             if (view.getDateTextField().getText().equals("") && !view.getDescriptionTextField().getText().equals("") && !view.getAmountTextField().getText().equals("")) {
                 view.getDateTextField().setText(LocalDate.now().toString());
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
@@ -427,6 +434,7 @@ public class Controller {
         view.getDescriptionTextField().setText("");
         view.getAmountTextField().setText("");
         isSaveUpToDate = false;
+        saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
     }
 
     private int convertRowIndexToModel() {
@@ -444,6 +452,7 @@ public class Controller {
             model.getTableModel().removeRow(modelRowIndex);
             updateValueAmountLabel();
             isSaveUpToDate = false;
+            saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
         }
     }
 
@@ -457,6 +466,7 @@ public class Controller {
                 model.getTableModel().setValueAt(item.getAmount(), modelRowIndex, 2);
                 updateValueAmountLabel();
                 isSaveUpToDate = false;
+                saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
             }
         }
     }
@@ -469,8 +479,7 @@ public class Controller {
             string1 = "****-**-**";
             string2 = "****-**-**";
             view.getSorter().setRowFilter(null);
-        }
-        else {
+        } else {
             Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
             RowFilter<DefaultTableModel, Integer> fromDateFilter;
             if (!view.getStartDateTextField().getText().equals("")) {
@@ -517,8 +526,7 @@ public class Controller {
             }
 
             // Apply filter
-            if (dateFilters.size() == 2)
-            {
+            if (dateFilters.size() == 2) {
                 LocalDate fromDate = LocalDate.parse(view.getStartDateTextField().getText());
                 LocalDate toDate = LocalDate.parse(view.getEndDateTextField().getText());
                 if (fromDate.isAfter(toDate)) {
@@ -578,8 +586,6 @@ public class Controller {
         view.getSearchBar().setText("");
         search();
     }
-
-
 
 
 }
