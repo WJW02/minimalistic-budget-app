@@ -109,14 +109,12 @@ public class Controller {
                 applyDate();
             }
         });
-
         view.getClearDateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clearFilter();
             }
         });
-
         view.getSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -319,53 +317,14 @@ public class Controller {
     private void uploadFile() {
         if (saveUploadFileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = saveUploadFileChooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath()))) {
-                // By reading lines it forces the data structure to be exact
-                // That helps to identify not compatible data better
-                String line;
-                boolean flag = false;
-                Vector<BudgetItem> budgetItems = new Vector<>();
-                while ((line = reader.readLine()) != null) {
-                    String[] components = line.split("\t");
-                    if (components.length != 3) {
-                        flag = true;
-                        break;
-                    }
-                    // Not using already created methods because of different error handling and efficiency reasons (and laziness to refactor)
-                    LocalDate date;
-                    // Date format check
-                    try {
-                        date = LocalDate.parse(components[0]);
-                    } catch (DateTimeParseException dtpe) {
-                        flag = true;
-                        break;
-                    }
-
-                    String description = components[1];
-
-                    BigDecimal amount;
-                    // Amount format check
-                    try {
-                        amount = new BigDecimal(components[2]);
-                    } catch (NumberFormatException nfe) {
-                        flag = true;
-                        break;
-                    }
-                    budgetItems.add(new BudgetItem(date, description, amount));
-                }
-                if (flag) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "File contains incompatible data", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    // Clear table model
-                    model.getTableModel().setRowCount(0);
-                    // Add new items to table model
-                    for (int i = 0; i < budgetItems.size(); ++i) {
-                        BudgetItem item = budgetItems.get(i);
-                        model.addRow(item);
-                    }
+            CustomTXTReader reader = new CustomTXTReader();
+            try {
+                if (reader.read(file, model)) {
                     updateValueAmountLabel();
                     currentFile = file.getAbsolutePath();
                     isSaveUpToDate = true;
+                } else {
+                    JOptionPane.showMessageDialog(view.getFrame(), "File contains incompatible data", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
