@@ -1,13 +1,9 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class View {
     private JFrame frame;
@@ -113,18 +109,6 @@ public class View {
         exportFileButton.setToolTipText("Export");
         printFileButton.setToolTipText("Print");
 
-        /*
-        Dimension buttonSize = new Dimension(79, 64);
-        //saveFileButton.setPreferredSize(buttonSize);    // Allocates the space
-        //saveFileButton.setMaximumSize(buttonSize);      // Uses the space
-        uploadFileButton.setPreferredSize(buttonSize);
-        uploadFileButton.setMaximumSize(buttonSize);
-        exportFileButton.setPreferredSize(buttonSize);
-        exportFileButton.setMaximumSize(buttonSize);
-        printFileButton.setPreferredSize(buttonSize);
-        printFileButton.setMaximumSize(buttonSize);
-        */
-
         headerPanel.add(saveFileButton);
         headerPanel.add(Box.createRigidArea(new Dimension(16, 0)));
         headerPanel.add(uploadFileButton);
@@ -164,10 +148,6 @@ public class View {
         operationalPanel3.setLayout(new BoxLayout(operationalPanel3, BoxLayout.Y_AXIS));
         operationalPanel4.setLayout(new BoxLayout(operationalPanel4, BoxLayout.X_AXIS));
 
-        //test
-        //operationalPanel3.add(Box.createHorizontalGlue());
-        //operationalPanel3.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         dateLabel = new JLabel("Date");
         descriptionLabel = new JLabel("Description");
         amountLabel = new JLabel("Amount");
@@ -185,10 +165,6 @@ public class View {
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
         updateButton = new JButton("Update");
-
-        // test
-        //JLabel testLabel = new JLabel("Vedimao proidofadisaofup");
-        //operationalPanel3.add(testLabel);
 
         operationalPanel2.add(dateLabel);
         operationalPanel2.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -240,10 +216,6 @@ public class View {
 
         startDateLabel.setForeground(Color.WHITE);
         endDateLabel.setForeground(Color.WHITE);
-
-        // Current date
-        //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        //Date date = new Date();
 
         startDateTextField = new JTextField("", 16);
         startDateTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, startDateTextField.getPreferredSize().height));
@@ -355,152 +327,76 @@ public class View {
         return frame;
     }
 
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
     public CustomButton getSaveFileButton() {
         return saveFileButton;
-    }
-
-    public void setSaveFileButton(CustomButton saveFileButton) {
-        this.saveFileButton = saveFileButton;
     }
 
     public CustomButton getUploadFileButton() {
         return uploadFileButton;
     }
 
-    public void setUploadFileButton(CustomButton uploadFileButton) {
-        this.uploadFileButton = uploadFileButton;
-    }
-
     public CustomButton getExportFileButton() {
         return exportFileButton;
-    }
-
-    public void setExportFileButton(CustomButton exportFileButton) {
-        this.exportFileButton = exportFileButton;
     }
 
     public CustomButton getPrintFileButton() {
         return printFileButton;
     }
 
-    public void setPrintFileButton(CustomButton printFileButton) {
-        this.printFileButton = printFileButton;
-    }
-
     public JTextField getDateTextField() {
         return dateTextField;
-    }
-
-    public void setDateTextField(JTextField dateTextField) {
-        this.dateTextField = dateTextField;
     }
 
     public JTextField getDescriptionTextField() {
         return descriptionTextField;
     }
 
-    public void setDescriptionTextField(JTextField descriptionTextField) {
-        this.descriptionTextField = descriptionTextField;
-    }
-
     public JTextField getAmountTextField() {
         return amountTextField;
-    }
-
-    public void setAmountTextField(JTextField amountTextField) {
-        this.amountTextField = amountTextField;
     }
 
     public JButton getAddButton() {
         return addButton;
     }
 
-    public void setAddButton(JButton addButton) {
-        this.addButton = addButton;
-    }
-
     public JButton getDeleteButton() {
         return deleteButton;
-    }
-
-    public void setDeleteButton(JButton deleteButton) {
-        this.deleteButton = deleteButton;
     }
 
     public JButton getUpdateButton() {
         return updateButton;
     }
 
-    public void setUpdateButton(JButton updateButton) {
-        this.updateButton = updateButton;
-    }
-
     public JTextField getStartDateTextField() {
         return startDateTextField;
-    }
-
-    public void setStartDateTextField(JTextField startDateTextField) {
-        this.startDateTextField = startDateTextField;
     }
 
     public JTextField getEndDateTextField() {
         return endDateTextField;
     }
 
-    public void setEndDateTextField(JTextField endDateTextField) {
-        this.endDateTextField = endDateTextField;
-    }
-
     public JButton getApplyDateButton() {
         return applyDateButton;
-    }
-
-    public void setApplyDateButton(JButton applyDateButton) {
-        this.applyDateButton = applyDateButton;
     }
 
     public JButton getClearDateButton() {
         return clearDateButton;
     }
 
-    public void setClearDateButton(JButton clearDateButton) {
-        this.clearDateButton = clearDateButton;
-    }
-
     public JTextField getSearchBar() {
         return searchBar;
-    }
-
-    public void setSearchBar(JTextField searchBar) {
-        this.searchBar = searchBar;
     }
 
     public JButton getSearchButton() {
         return searchButton;
     }
 
-    public void setSearchButton(JButton searchButton) {
-        this.searchButton = searchButton;
-    }
-
     public JButton getClearSearchButton() {
         return clearSearchButton;
     }
 
-    public void setClearSeachButton(JButton clearSearchButton) {
-        this.clearSearchButton = clearSearchButton;
-    }
-
     public JLabel getTimeFrameLabel() {
         return timeFrameLabel;
-    }
-
-    public void setTimeFrameLabel(JLabel timeFrameLabel) {
-        this.timeFrameLabel = timeFrameLabel;
     }
 
     public JTable getTable() {
@@ -515,15 +411,7 @@ public class View {
         return sorter;
     }
 
-    public void setSorter(TableRowSorter<DefaultTableModel> sorter) {
-        this.sorter = sorter;
-    }
-
     public JLabel getValueAmountLabel() {
         return valueAmountLabel;
-    }
-
-    public void setValueAmountLabel(JLabel valueAmountLabel) {
-        this.valueAmountLabel = valueAmountLabel;
     }
 }
