@@ -1,7 +1,6 @@
 package model;
 
 import javax.swing.table.DefaultTableModel;
-import java.util.Vector;
 
 public class Model {
     // Using DefaultTableModel over TableModel because it has built-in
@@ -18,16 +17,6 @@ public class Model {
             }
         };
     }
-
-    /*
-    public Model(Vector<BudgetItem> budgetItems) {
-        this();
-        for (int i = 0; i < budgetItems.size(); ++i) {
-            BudgetItem item = budgetItems.get(i);
-            addRow(item);
-        }
-    }
-    */
 
     public DefaultTableModel getTableModel() {
         return tableModel;
@@ -54,5 +43,4 @@ public class Model {
         }
         return true;
     }
-
 }
