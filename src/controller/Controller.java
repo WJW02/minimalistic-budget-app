@@ -41,16 +41,20 @@ public class Controller {
         init();
     }
 
+    public void displayView() {
+        view.display();
+    }
+
     private void init() {
         initFrame();
+        initAutomaticSaveTimer();
+        initTable();
         addActionListeners();
         applyDate();
         previousSearch = "";
         isSaveUpToDate = true;
         saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
         exportFileChooser = new ExportFileChooser();
-        initAutomaticSaveTimer();
-        initTable();
     }
 
     private void addActionListeners() {
@@ -122,30 +126,6 @@ public class Controller {
         });
     }
 
-    /*
-    private boolean isSaveUpToDate() {
-        if (model.getTableModel().getRowCount() == 0) {
-            return true;
-        }
-        if (currentFile.equals("")) {
-            return false;
-        }
-        CustomTXTReader reader = new CustomTXTReader();
-        File file = new File(currentFile);
-        Model tmpModel = new Model();
-        try {
-            if (reader.read(file, tmpModel)) {
-                if (model.equals(tmpModel)) {
-                    return true;
-                }
-            }
-        } catch (IOException ioe) {
-            // Previous save has been moved or been corrupted
-        }
-        return false;
-    }
-     */
-
     private void initFrame() {
         view.getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         view.getFrame().addWindowListener(new WindowAdapter() {
@@ -161,83 +141,6 @@ public class Controller {
             }
         });
     }
-
-    /*
-    private File getSelectedFileWithExtension(JFileChooser fileChooser) {
-        File file = fileChooser.getSelectedFile();
-        String fileDescription = fileChooser.getFileFilter().getDescription();
-        switch (fileDescription) {
-            case "TEXT file":
-                if (!file.getName().endsWith(".txt")) {
-                    file = new File(file + ".txt");
-                }
-                break;
-            case "CSV file":
-                if (!file.getName().endsWith(".csv")) {
-                    file = new File(file + ".csv");
-                }
-                break;
-            case "ODS file":
-                if (!file.getName().endsWith(".ods")) {
-                    file = new File(file + ".ods");
-                }
-                break;
-            default:
-                JOptionPane.showMessageDialog(view.getFrame(), "Extension not available", "Error", JOptionPane.ERROR_MESSAGE);
-                break;
-        }
-        return file;
-    }
-
-    private JFileChooser initSaveUploadFileChooser() {
-        JFileChooser saveUploadFileChooser = new JFileChooser() {
-            @Override
-            public void approveSelection() {
-                File file = getSelectedFileWithExtension(this);
-                if (getDialogType() == SAVE_DIALOG && file.exists()) {
-                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Warning", JOptionPane.YES_NO_OPTION);
-                    if (result != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                } else if (getDialogType() == OPEN_DIALOG && !file.exists()) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "File doesn't exist or can't be opened", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                } else if (getDialogType() == OPEN_DIALOG && !isSaveUpToDate) {
-                    int result = JOptionPane.showConfirmDialog(view.getFrame(), "You haven't saved your changes. Are you sure you want to upload another save?", "Warning", JOptionPane.YES_NO_OPTION);
-                    if (result != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                }
-                super.approveSelection();
-            }
-        };
-        saveUploadFileChooser.removeChoosableFileFilter(saveUploadFileChooser.getFileFilter());  //remove the default file filter
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT file", "txt");
-        saveUploadFileChooser.addChoosableFileFilter(filter);
-        return saveUploadFileChooser;
-    }
-
-    public JFileChooser initExportFileChooser() {
-        JFileChooser exportFileChooser = new JFileChooser() {
-            @Override
-            public void approveSelection() {
-                File file = getSelectedFileWithExtension(this);
-                if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this, "File already exists, do you want to overwrite it?", "Warning", JOptionPane.YES_NO_OPTION);
-                    if (result != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                }
-                super.approveSelection();
-            }
-        };
-        exportFileChooser.removeChoosableFileFilter(exportFileChooser.getFileFilter());  //remove the default file filter
-        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV file", "csv"));
-        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("TEXT file", "txt"));
-        exportFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("ODS file", "ods"));
-        return exportFileChooser;
-    }
-     */
 
     private void initAutomaticSaveTimer() {
         automaticSaveTimer = new Timer();
@@ -274,10 +177,6 @@ public class Controller {
                 }
             }
         });
-    }
-
-    public void displayView() {
-        view.display();
     }
 
     private void automaticSaveFile() {
