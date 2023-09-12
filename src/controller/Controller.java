@@ -7,7 +7,6 @@ import view.View;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,9 +14,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -31,7 +27,7 @@ public class Controller {
     String previousSearch;
     /* saveUploadFileChooser separated from exportFileChooser because:
      *  - Different file filters options
-     *  - Default file save name = uploaded file
+     *  - We want the default file save name to be equal to the uploaded file name
      */
     SaveUploadFileChooser saveUploadFileChooser;
     ExportFileChooser exportFileChooser;
@@ -82,7 +78,6 @@ public class Controller {
                 printFile();
             }
         });
-
         view.getAddButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,7 +96,6 @@ public class Controller {
                 updateItem();
             }
         });
-
         view.getApplyDateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -392,8 +386,8 @@ public class Controller {
 
     private BudgetItem createBudgetItem() {
         // Empty fields check
-        if (view.getDateTextField().getText().equals("") || view.getDescriptionTextField().getText().equals("") || view.getAmountTextField().getText().equals("")) {
-            if (view.getDateTextField().getText().equals("") && !view.getDescriptionTextField().getText().equals("") && !view.getAmountTextField().getText().equals("")) {
+        if (view.getDateTextField().getText().isEmpty() || view.getDescriptionTextField().getText().isEmpty() || view.getAmountTextField().getText().isEmpty()) {
+            if (view.getDateTextField().getText().isEmpty() && !view.getDescriptionTextField().getText().isEmpty() && !view.getAmountTextField().getText().isEmpty()) {
                 view.getDateTextField().setText(LocalDate.now().toString());
             } else {
                 JOptionPane.showMessageDialog(view.getFrame(), "Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
@@ -437,7 +431,7 @@ public class Controller {
         saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
     }
 
-    private int convertRowIndexToModel() {
+    private int convertSelectedRowIndexToModel() {
         int selectedRowIndex = view.getTable().getSelectedRow();
         if (selectedRowIndex != -1) {
             return view.getTable().convertRowIndexToModel(selectedRowIndex);
@@ -447,7 +441,7 @@ public class Controller {
     }
 
     private void deleteItem() {
-        int modelRowIndex = convertRowIndexToModel();
+        int modelRowIndex = convertSelectedRowIndexToModel();
         if (modelRowIndex != -1) {
             model.getTableModel().removeRow(modelRowIndex);
             updateValueAmountLabel();
@@ -457,7 +451,7 @@ public class Controller {
     }
 
     private void updateItem() {
-        int modelRowIndex = convertRowIndexToModel();
+        int modelRowIndex = convertSelectedRowIndexToModel();
         if (modelRowIndex != -1) {
             BudgetItem item = createBudgetItem();
             if (item != null) {
@@ -474,7 +468,7 @@ public class Controller {
     private void applyDate() {
         String string1;
         String string2;
-        if (view.getStartDateTextField().getText().equals("") && view.getEndDateTextField().getText().equals("")) {
+        if (view.getStartDateTextField().getText().isEmpty() && view.getEndDateTextField().getText().isEmpty()) {
             // Apply no filter
             string1 = "****-**-**";
             string2 = "****-**-**";
@@ -482,7 +476,7 @@ public class Controller {
         } else {
             Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
             RowFilter<DefaultTableModel, Integer> fromDateFilter;
-            if (!view.getStartDateTextField().getText().equals("")) {
+            if (!view.getStartDateTextField().getText().isEmpty()) {
                 LocalDate fromDate;
                 try {
                     fromDate = LocalDate.parse(view.getStartDateTextField().getText());
@@ -504,7 +498,7 @@ public class Controller {
             }
 
             RowFilter<DefaultTableModel, Integer> toDateFilter;
-            if (!view.getEndDateTextField().getText().equals("")) {
+            if (!view.getEndDateTextField().getText().isEmpty()) {
                 LocalDate toDate;
                 try {
                     toDate = LocalDate.parse(view.getEndDateTextField().getText());
@@ -551,7 +545,7 @@ public class Controller {
 
     private void search() {
         String key = view.getSearchBar().getText().toLowerCase();
-        if (key.equals("")) {
+        if (key.isEmpty()) {
             view.getTable().clearSelection();
             searchRowIndex = 0;
             previousSearch = "";
