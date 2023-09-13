@@ -87,8 +87,6 @@ public class CustomButton extends JButton implements MouseListener {
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        //setContentAreaFilled(false);
-        //setOpaque(true);
         setBackground(pressedColor);
     }
 
@@ -99,7 +97,6 @@ public class CustomButton extends JButton implements MouseListener {
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        //setContentAreaFilled(true);
         setBackground(hoverColor);
     }
 
