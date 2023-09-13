@@ -273,10 +273,10 @@ public class Controller {
 
     private void updateValueAmountLabel() {
         BigDecimal totalValue = new BigDecimal(0);
-        int rowCount = view.getSorter().getViewRowCount();
+        int rowCount = view.getTableSorter().getViewRowCount();
 
         for (int i = 0; i < rowCount; ++i) {
-            int modelRowIndex = view.getSorter().convertRowIndexToModel(i);
+            int modelRowIndex = view.getTableSorter().convertRowIndexToModel(i);
             BigDecimal value = (BigDecimal) model.getTableModel().getValueAt(modelRowIndex, 2);
             totalValue = totalValue.add(value);
         }
@@ -371,7 +371,7 @@ public class Controller {
             // Apply no filter
             string1 = "****-**-**";
             string2 = "****-**-**";
-            view.getSorter().setRowFilter(null);
+            view.getTableSorter().setRowFilter(null);
         } else {
             Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
             RowFilter<DefaultTableModel, Integer> fromDateFilter;
@@ -427,7 +427,7 @@ public class Controller {
                     return;
                 }
             }
-            view.getSorter().setRowFilter(RowFilter.andFilter(dateFilters));
+            view.getTableSorter().setRowFilter(RowFilter.andFilter(dateFilters));
         }
 
         updateValueAmountLabel();
@@ -455,14 +455,14 @@ public class Controller {
             previousSearch = key;
         }
 
-        int rowCount = view.getSorter().getViewRowCount();
+        int rowCount = view.getTableSorter().getViewRowCount();
         int columnCount = model.getTableModel().getColumnCount();
         if (searchRowIndex >= rowCount) {
             searchRowIndex = 0;
         }
 
         for (; searchRowIndex < rowCount; ++searchRowIndex) {
-            int modelRowIndex = view.getSorter().convertRowIndexToModel(searchRowIndex);
+            int modelRowIndex = view.getTableSorter().convertRowIndexToModel(searchRowIndex);
             for (int searchColumnIndex = 0; searchColumnIndex < columnCount; ++searchColumnIndex) {
                 String s = model.getTableModel().getValueAt(modelRowIndex, searchColumnIndex).toString().toLowerCase();
                 if (s.contains(key)) {
