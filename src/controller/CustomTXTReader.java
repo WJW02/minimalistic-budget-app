@@ -12,7 +12,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Vector;
 
+/**
+ * The class for reading .txt files for a {@link Model}.
+ *
+ * @author WJW02
+ */
 public class CustomTXTReader implements CustomReader {
+    /**
+     * Reads a .txt file and dumps its content in a {@link Model}.
+     *
+     * @param file the .txt file it reads from
+     * @param model the model in which it dumps the content
+     * @return <code>true</code> - if the dump was successful, that means that the file contains
+     * compatible data for the Model<br>
+     * <code>false</code> - otherwise
+     * @throws IOException if the file exists but is a directory rather than a regular file,
+     * does not exist but cannot be created, or cannot be opened for any other reason
+     */
     @Override
     public boolean read(File file, Model model) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
@@ -27,7 +43,6 @@ public class CustomTXTReader implements CustomReader {
                 success = false;
                 break;
             }
-            // Not using already created methods because of different error handling and efficiency reasons (and laziness to refactor)
             LocalDate date;
             // Date format check
             try {
@@ -50,6 +65,7 @@ public class CustomTXTReader implements CustomReader {
             budgetItems.add(new BudgetItem(date, description, amount));
         }
         if (success) {
+            // Dumps the content in the model
             model.getTableModel().setRowCount(0);
             for (int i = 0; i < budgetItems.size(); ++i) {
                 BudgetItem item = budgetItems.get(i);
