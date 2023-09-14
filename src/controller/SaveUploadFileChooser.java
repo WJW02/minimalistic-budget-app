@@ -4,14 +4,39 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
+/**
+ * A class providing a customized {@link JFileChooser} for save and upload.
+ * <p>
+ * This JFileChooser provides basic error handling through dialogs, shows confirmation dialogs when
+ * trying to overwrite existing files and when trying to close without saving.
+ *
+ * @author WJW02
+ */
 public class SaveUploadFileChooser extends JFileChooser implements CustomFileChooser {
+    /**
+     * Checks whether file is up-to-date.
+     */
     private boolean isSaveUpToDate;
+
+    /**
+     * Initializes this JFileChooser with txt as the only allowed extension.
+     *
+     * @param isSaveUpToDate checks whether file is up-to-date
+     */
     public SaveUploadFileChooser(boolean isSaveUpToDate) {
-        removeChoosableFileFilter(getFileFilter());  //remove the default file filter
+        removeChoosableFileFilter(getFileFilter());     // Remove the default file filter
         addChoosableFileFilter(new FileNameExtensionFilter("TEXT file", "txt"));
         this.isSaveUpToDate = isSaveUpToDate;
     }
 
+    /**
+     * Called by the UI when the user hits the Approve button (labeled "Open" or "Save", by default).
+     * This can also be called by the programmer.
+     * This method causes an action event to fire with the command string equal to {@link #APPROVE_SELECTION}.
+     * <p>
+     * This provides basic error handling through dialogs, shows confirmation dialogs when
+     * trying to overwrite existing files and when trying to close without saving.
+     */
     @Override
     public void approveSelection() {
         File file = getSelectedFileWithExtension();
