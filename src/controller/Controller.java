@@ -14,11 +14,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.Timer;
 import java.awt.print.*;
+
+import static java.time.temporal.TemporalAdjusters.*;
 
 /**
  * The class providing the controller of the application.
@@ -73,10 +76,10 @@ public class Controller {
     boolean isSaveUpToDate;
 
     /**
-     *  Creates a controller and connects it to the model and the view.
+     * Creates a controller and connects it to the model and the view.
      *
      * @param model the model of the application
-     * @param view the view of the application
+     * @param view  the view of the application
      * @see #init()
      */
     public Controller(Model model, View view) {
@@ -99,14 +102,14 @@ public class Controller {
      * @see #initAutomaticSaveTimer()
      * @see #initTable()
      * @see #addActionListeners()
-     * @see #applyDate()
+     * @see #applyOther()
      */
     private void init() {
         initFrame();
         initAutomaticSaveTimer();
         initTable();
         addActionListeners();
-        applyDate();
+        selectDateFilter();
         previousSearch = "";
         isSaveUpToDate = true;
         saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
@@ -160,10 +163,16 @@ public class Controller {
                 updateItem();
             }
         });
+        view.getDateComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectDateFilter();
+            }
+        });
         view.getApplyDateButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                applyDate();
+                applyOther();
             }
         });
         view.getClearDateButton().addActionListener(new ActionListener() {
@@ -493,32 +502,106 @@ public class Controller {
     }
 
     /**
-     * Applies the date filters specified by {@link View#getStartDateTextField()}
+     * Disables the components that lets the user to freely specify the date range.
+     */
+    private void disableOtherComponents() {
+        view.getStartDateTextField().setEnabled(false);
+        view.getEndDateTextField().setEnabled(false);
+        view.getApplyDateButton().setEnabled(false);
+        view.getClearDateButton().setEnabled(false);
+    }
+
+    /**
+     * Selects the filter to apply on {@link View#getTable()} given
+     * the selected item on {@link View#getDateComboBox()}.
+     * <p>
+     * The option <code>other</code> allows to freely specify the date range
+     * by enabling the right components.
+     *
+     * @see #applyDate(LocalDate, LocalDate)
+     * @see #disableOtherComponents()
+     */
+    private void selectDateFilter() {
+        String selectedItem = (String) view.getDateComboBox().getSelectedItem();
+        LocalDate today = LocalDate.now();
+        switch (selectedItem) {
+            case "Today":
+                disableOtherComponents();
+                applyDate(today, today);
+                break;
+            case "This week":
+                disableOtherComponents();
+                applyDate(today.with(previousOrSame(DayOfWeek.MONDAY)), today.with(nextOrSame(DayOfWeek.SUNDAY)));
+                break;
+            case "This month":
+                disableOtherComponents();
+                applyDate(today.with(firstDayOfMonth()), today.with(lastDayOfMonth()));
+                break;
+            case "This year":
+                disableOtherComponents();
+                applyDate(today.with(firstDayOfYear()), today.with(lastDayOfYear()));
+                break;
+            case "Other":
+                view.getStartDateTextField().setEnabled(true);
+                view.getEndDateTextField().setEnabled(true);
+                view.getApplyDateButton().setEnabled(true);
+                view.getClearDateButton().setEnabled(true);
+                break;
+        }
+    }
+
+    /**
+     * Applies the date filter specified by {@link View#getStartDateTextField()}
      * and {@link View#getEndDateTextField()} on {@link View#getTable()}.
      *
+     * @see #applyDate(LocalDate, LocalDate)
+     */
+    private void applyOther() {
+        LocalDate fromDate, toDate;
+        if (!view.getStartDateTextField().getText().isEmpty()) {
+            try {
+                fromDate = LocalDate.parse(view.getStartDateTextField().getText());
+            } catch (DateTimeParseException dtpe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else {
+            fromDate = null;
+        }
+        if (!view.getEndDateTextField().getText().isEmpty()) {
+            try {
+                toDate = LocalDate.parse(view.getEndDateTextField().getText());
+            } catch (DateTimeParseException dtpe) {
+                JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else {
+            toDate = null;
+        }
+        applyDate(fromDate, toDate);
+
+    }
+
+    /**
+     * Applies the date filter on {@link View#getTable()}.
+     *
+     * @param fromDate start date
+     * @param toDate end date
      * @see RowFilter
      */
-    private void applyDate() {
+    private void applyDate(LocalDate fromDate, LocalDate toDate) {
         String string1;
         String string2;
-        if (view.getStartDateTextField().getText().isEmpty() && view.getEndDateTextField().getText().isEmpty()) {
-            // Apply no filter
+        if (fromDate == null && toDate == null) {
             string1 = "****-**-**";
             string2 = "****-**-**";
             view.getTableSorter().setRowFilter(null);
         } else {
             Vector<RowFilter<DefaultTableModel, Integer>> dateFilters = new Vector<>();
             RowFilter<DefaultTableModel, Integer> fromDateFilter;
-            if (!view.getStartDateTextField().getText().isEmpty()) {
-                LocalDate fromDate;
-                try {
-                    fromDate = LocalDate.parse(view.getStartDateTextField().getText());
-                } catch (DateTimeParseException dtpe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                string1 = view.getStartDateTextField().getText();
-                fromDateFilter = new RowFilter<DefaultTableModel, Integer>() {
+            RowFilter<DefaultTableModel, Integer> toDateFilter;
+            if (fromDate != null) {
+                fromDateFilter = new RowFilter<>() {
                     @Override
                     public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
                         LocalDate dateValue = (LocalDate) entry.getValue(0);
@@ -526,21 +609,12 @@ public class Controller {
                     }
                 };
                 dateFilters.add(fromDateFilter);
+                string1 = fromDate.toString();
             } else {
                 string1 = "****-**-**";
             }
-
-            RowFilter<DefaultTableModel, Integer> toDateFilter;
-            if (!view.getEndDateTextField().getText().isEmpty()) {
-                LocalDate toDate;
-                try {
-                    toDate = LocalDate.parse(view.getEndDateTextField().getText());
-                } catch (DateTimeParseException dtpe) {
-                    JOptionPane.showMessageDialog(view.getFrame(), "Enter valid dates (yyyy-MM-dd)", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                string2 = view.getEndDateTextField().getText();
-                toDateFilter = new RowFilter<DefaultTableModel, Integer>() {
+            if (toDate != null) {
+                toDateFilter = new RowFilter<>() {
                     @Override
                     public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
                         LocalDate dateValue = (LocalDate) entry.getValue(0);
@@ -548,14 +622,11 @@ public class Controller {
                     }
                 };
                 dateFilters.add(toDateFilter);
+                string2 = toDate.toString();
             } else {
                 string2 = "****-**-**";
             }
-
-            // Apply filter
             if (dateFilters.size() == 2) {
-                LocalDate fromDate = LocalDate.parse(view.getStartDateTextField().getText());
-                LocalDate toDate = LocalDate.parse(view.getEndDateTextField().getText());
                 if (fromDate.isAfter(toDate)) {
                     JOptionPane.showMessageDialog(view.getFrame(), "End date should come after the start date", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -563,9 +634,7 @@ public class Controller {
             }
             view.getTableSorter().setRowFilter(RowFilter.andFilter(dateFilters));
         }
-
         updateValueAmountLabel();
-
         // Update timeFrameLabel
         view.getTimeFrameLabel().setText("From " + string1 + " To " + string2);
     }
@@ -576,7 +645,7 @@ public class Controller {
     private void clearFilter() {
         view.getStartDateTextField().setText("");
         view.getEndDateTextField().setText("");
-        applyDate();
+        applyOther();
     }
 
     /**
