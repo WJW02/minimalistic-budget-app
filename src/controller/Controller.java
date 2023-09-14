@@ -111,10 +111,11 @@ public class Controller {
         isSaveUpToDate = true;
         saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
         exportFileChooser = new ExportFileChooser();
+        view.getDateTextField().setText(LocalDate.now().toString());
     }
 
     /**
-     * Binds the buttons of the view with <Code>ActionListeners</Code>
+     * Binds the buttons of the view with <Code>ActionListeners</Code>.
      */
     private void addActionListeners() {
         view.getSaveFileButton().addActionListener(new ActionListener() {
@@ -242,6 +243,10 @@ public class Controller {
         view.getAmountTextField().setText(table.getValueAt(selectedRowIndex, 2).toString());
     }
 
+    /**
+     * Initializes the table to fill in the text fields in the Table Operation section when selected
+     * and sets its selection mode to single.
+     */
     private void initTable() {
         view.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -389,7 +394,7 @@ public class Controller {
             if (view.getDateTextField().getText().isEmpty() && !view.getDescriptionTextField().getText().isEmpty() && !view.getAmountTextField().getText().isEmpty()) {
                 view.getDateTextField().setText(LocalDate.now().toString());
             } else {
-                JOptionPane.showMessageDialog(view.getFrame(), "Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view.getFrame(), "The Description and the Amount fields must be filled in", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
         }
