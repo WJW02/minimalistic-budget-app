@@ -40,24 +40,12 @@ public class SaveUploadFileChooser extends JFileChooser implements CustomFileCho
     public File getSelectedFileWithExtension() {
         File file = getSelectedFile();
         String fileDescription = getFileFilter().getDescription();
-        switch (fileDescription) {
-            case "TEXT file":
-                if (!file.getName().endsWith(".txt")) {
-                    file = new File(file + ".txt");
-                }
-                break;
-            case "CSV file":
-                if (!file.getName().endsWith(".csv")) {
-                    file = new File(file + ".csv");
-                }
-                break;
-            case "ODS file":
-                if (!file.getName().endsWith(".ods")) {
-                    file = new File(file + ".ods");
-                }
-                break;
-            default:
-                return null;
+        if (fileDescription.equals("TEXT file")) {
+            if (!file.getName().endsWith(".txt")) {
+                file = new File(file + ".txt");
+            }
+        } else {
+            return null;
         }
         return file;
     }
