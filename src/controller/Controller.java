@@ -20,31 +20,87 @@ import java.util.*;
 import java.util.Timer;
 import java.awt.print.*;
 
+/**
+ * The class providing the controller of the application.
+ * <p>
+ * The controller connects the {@link View} with the {@link Model}.
+ * <p>
+ * saveUploadFileChooser is separated from exportFileChooser because:
+ * <ul>
+ *     <li>They need different file filters options</li>
+ *     <li>This way the default file save name will be equal to the uploaded file name
+ *     when the dialog shows up</li>
+ * </ul>
+ *
+ * @author WJW02
+ */
 public class Controller {
+    /**
+     * The model of the application.
+     */
     private Model model;
+    /**
+     * The view of the application.
+     */
     private View view;
+    /**
+     * The starting search index for {@link View#getTable()}.
+     */
     int searchRowIndex;
+    /**
+     * The last searched string in {@link View#getTable()}.
+     */
     String previousSearch;
-    /* saveUploadFileChooser separated from exportFileChooser because:
-     *  - Different file filters options
-     *  - We want the default file save name to be equal to the uploaded file name
+    /**
+     * The file chooser used for save and upload.
      */
     SaveUploadFileChooser saveUploadFileChooser;
+    /**
+     * The file chooser used for export.
+     */
     ExportFileChooser exportFileChooser;
+    /**
+     * The timer executing {@link #automaticSaveTimerTask}.
+     */
     Timer automaticSaveTimer;
+    /**
+     * The task executed by {@link #automaticSaveTimer}.
+     */
     TimerTask automaticSaveTimerTask;
+    /**
+     * Checks if save is up-to-date.
+     */
     boolean isSaveUpToDate;
 
+    /**
+     *  Creates a controller and connects it to the model and the view.
+     *
+     * @param model the model of the application
+     * @param view the view of the application
+     * @see #init()
+     */
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
         init();
     }
 
+    /**
+     * Makes the view visible.
+     */
     public void displayView() {
         view.display();
     }
 
+    /**
+     * Initializes the underlying mechanisms.
+     *
+     * @see #initFrame()
+     * @see #initAutomaticSaveTimer()
+     * @see #initTable()
+     * @see #addActionListeners()
+     * @see #applyDate()
+     */
     private void init() {
         initFrame();
         initAutomaticSaveTimer();
@@ -57,6 +113,9 @@ public class Controller {
         exportFileChooser = new ExportFileChooser();
     }
 
+    /**
+     * Binds the buttons of the view with <Code>ActionListeners</Code>
+     */
     private void addActionListeners() {
         view.getSaveFileButton().addActionListener(new ActionListener() {
             @Override
@@ -126,6 +185,10 @@ public class Controller {
         });
     }
 
+    /**
+     * Initializes {@link View#getFrame()} to show a confirmation dialog when
+     * trying to close without saving.
+     */
     private void initFrame() {
         view.getFrame().setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         view.getFrame().addWindowListener(new WindowAdapter() {
@@ -142,6 +205,12 @@ public class Controller {
         });
     }
 
+    /**
+     * Initializes {@link #automaticSaveTimer} to {@link Timer#scheduleAtFixedRate(TimerTask, long, long)}
+     * {@link #automaticSaveTimerTask}.
+     * <p>
+     * automaticSaveTimerTask runs {@link #automaticSaveFile()}.
+     */
     private void initAutomaticSaveTimer() {
         automaticSaveTimer = new Timer();
         automaticSaveTimerTask = new TimerTask() {
@@ -153,6 +222,11 @@ public class Controller {
         automaticSaveTimer.scheduleAtFixedRate(automaticSaveTimerTask, 600000, 600000);
     }
 
+    /**
+     * Fills the text fields in the Table Operation section with the values
+     * of the selected row.
+     * If no row is selected the text fields get cleared.
+     */
     private void fillOperationalTextFields() {
         JTable table = view.getTable();
         int selectedRowIndex;
@@ -177,8 +251,12 @@ public class Controller {
                 }
             }
         });
+        view.getTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
+    /**
+     * Makes a backup of {@link Model}.
+     */
     private void automaticSaveFile() {
         if (model.getTableModel().getRowCount() == 0) {
             return;
@@ -192,6 +270,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Shows the save dialog to save the {@link Model} in a .txt file.
+     */
     private void manualSaveFile() {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = saveUploadFileChooser.getSelectedFileWithExtension();
@@ -211,6 +292,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Shows the open dialog to upload a compatible .txt file in the {@link Model}.
+     */
     private void uploadFile() {
         if (saveUploadFileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
             File file = saveUploadFileChooser.getSelectedFile();
@@ -229,6 +313,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Shows a save dialog to export the {@link Model} in a file (csv, txt, ods).
+     */
     private void exportFile() {
         // Show FileChooser (that is set to show 3 filters)
         if (exportFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
@@ -263,6 +350,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Shows a print dialog to print the {@link Model}.
+     */
     private void printFile() {
         try {
             view.getTable().print();
@@ -271,6 +361,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Updates {@link View#getValueAmountLabel()} to show the total amount.
+     */
     private void updateValueAmountLabel() {
         BigDecimal totalValue = new BigDecimal(0);
         int rowCount = view.getTableSorter().getViewRowCount();
@@ -283,6 +376,13 @@ public class Controller {
         view.getValueAmountLabel().setText(totalValue + "€");
     }
 
+    /**
+     * Creates a {@link BudgetItem} from the values in {@link View#getDateTextField()},
+     * {@link View#getDescriptionTextField()} and {@link View#getAmountTextField()}.
+     *
+     * @return <code>BudgetItem</code> - if the text fields contain compatible data<br>
+     * <code>null</code> - otherwise
+     */
     private BudgetItem createBudgetItem() {
         // Empty fields check
         if (view.getDateTextField().getText().isEmpty() || view.getDescriptionTextField().getText().isEmpty() || view.getAmountTextField().getText().isEmpty()) {
@@ -316,6 +416,13 @@ public class Controller {
         return new BudgetItem(date, description, amount);
     }
 
+    /**
+     * Adds the {@link BudgetItem} from the values in {@link View#getDateTextField()},
+     * {@link View#getDescriptionTextField()} and {@link View#getAmountTextField()}
+     * in the {@link Model}.
+     *
+     * @see #createBudgetItem()
+     */
     private void addItem() {
         BudgetItem item = createBudgetItem();
         if (item == null) {
@@ -330,6 +437,13 @@ public class Controller {
         saveUploadFileChooser.setSaveUpToDate(isSaveUpToDate);
     }
 
+    /**
+     * Converts the index of the selected row in {@link View#getTable()} to its
+     * equivalent in {@link Model#getTableModel()}.
+     *
+     * @return <code>index</code> - if true<br>
+     * <code>-1</code> - otherwise
+     */
     private int convertSelectedRowIndexToModel() {
         int selectedRowIndex = view.getTable().getSelectedRow();
         if (selectedRowIndex != -1) {
@@ -339,6 +453,9 @@ public class Controller {
         return -1;
     }
 
+    /**
+     * Deletes the selected item from {@link Model}.
+     */
     private void deleteItem() {
         int modelRowIndex = convertSelectedRowIndexToModel();
         if (modelRowIndex != -1) {
@@ -349,6 +466,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Updates the selected item with the values specified in {@link View#getDateTextField()},
+     * {@link View#getDescriptionTextField()} and {@link View#getAmountTextField()}.
+     *
+     * @see #createBudgetItem()
+     */
     private void updateItem() {
         int modelRowIndex = convertSelectedRowIndexToModel();
         if (modelRowIndex != -1) {
@@ -364,6 +487,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Applies the date filters specified by {@link View#getStartDateTextField()}
+     * and {@link View#getEndDateTextField()} on {@link View#getTable()}.
+     *
+     * @see RowFilter
+     */
     private void applyDate() {
         String string1;
         String string2;
@@ -436,12 +565,18 @@ public class Controller {
         view.getTimeFrameLabel().setText("From " + string1 + " To " + string2);
     }
 
+    /**
+     * Clears the date filters applied on {@link View#getTable()}.
+     */
     private void clearFilter() {
         view.getStartDateTextField().setText("");
         view.getEndDateTextField().setText("");
         applyDate();
     }
 
+    /**
+     * Highlights the first row that matches the string in {@link View#getSearchBar()}.
+     */
     private void search() {
         String key = view.getSearchBar().getText().toLowerCase();
         if (key.isEmpty()) {
@@ -475,6 +610,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Clears the search and the selected row on {@link View#getTable()}.
+     */
     private void clearSelection() {
         view.getSearchBar().setText("");
         search();
