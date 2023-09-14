@@ -11,7 +11,8 @@ import controller.Controller;
  */
 public class Main {
     /**
-     * Initializes the Model-View-Controller environment
+     * Initializes the app's Model-View-Controller environment
+     * and makes the view visible to the user.
      *
      * @param args The command line arguments
      */
@@ -21,5 +22,4 @@ public class Main {
         Controller controller = new Controller(model, view);
         controller.displayView();
     }
-
 }

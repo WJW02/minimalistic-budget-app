@@ -109,7 +109,7 @@ public class Controller {
         initAutomaticSaveTimer();
         initTable();
         addActionListeners();
-        selectDateFilter();
+        clearFilter();
         previousSearch = "";
         isSaveUpToDate = true;
         saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
@@ -118,7 +118,7 @@ public class Controller {
     }
 
     /**
-     * Binds the buttons of the view with <Code>ActionListeners</Code>.
+     * Binds the components of the view to <Code>ActionListeners</Code>.
      */
     private void addActionListeners() {
         view.getSaveFileButton().addActionListener(new ActionListener() {
@@ -508,7 +508,6 @@ public class Controller {
         view.getStartDateTextField().setEnabled(false);
         view.getEndDateTextField().setEnabled(false);
         view.getApplyDateButton().setEnabled(false);
-        view.getClearDateButton().setEnabled(false);
     }
 
     /**
@@ -545,7 +544,6 @@ public class Controller {
                 view.getStartDateTextField().setEnabled(true);
                 view.getEndDateTextField().setEnabled(true);
                 view.getApplyDateButton().setEnabled(true);
-                view.getClearDateButton().setEnabled(true);
                 break;
         }
     }
@@ -645,6 +643,8 @@ public class Controller {
     private void clearFilter() {
         view.getStartDateTextField().setText("");
         view.getEndDateTextField().setText("");
+        view.getDateComboBox().setSelectedItem("Other");
+        selectDateFilter();
         applyOther();
     }
 
