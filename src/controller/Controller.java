@@ -186,7 +186,7 @@ public class Controller {
         File file = new File("tmp" + File.separator + "backup.txt");
         CustomTXTWriter writer = new CustomTXTWriter();
         try {
-            writer.write(model, view, file);
+            writer.write(model, file);
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(view.getFrame(), "Auto-save failed", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -201,7 +201,7 @@ public class Controller {
             }
             CustomTXTWriter writer = new CustomTXTWriter();
             try {
-                writer.write(model, view, file);
+                writer.write(model, file);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(saveUploadFileChooser, "File save failed", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -256,7 +256,7 @@ public class Controller {
             }
             // Export (Polymorphism)
             try {
-                writer.write(model, view, file);
+                writer.write(model, file);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(exportFileChooser, "Exportation failed", "Error", JOptionPane.ERROR_MESSAGE);
             }
