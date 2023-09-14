@@ -5,7 +5,7 @@ import model.Model;
 import java.io.*;
 
 /**
- * The interface for writing character files from a {@link Model}.
+ * The interface for writing files from a {@link Model}.
  * <p>
  * The method that classes that implements this interface must implement is {@link #write(Model, File)}.
  *
@@ -13,11 +13,12 @@ import java.io.*;
  */
 interface CustomWriter {
     /**
-     * Writes a character file from a {@link Model}.
+     * Writes a file from a {@link Model}.
      *
      * @param model the model from which it gets the data
      * @param file the file it writes on
-     * @throws IOException
+     * @throws IOException if the file exists but is a directory rather than a regular file,
+     * does not exist but cannot be created, or cannot be opened for any other reason
      */
     void write(Model model, File file) throws IOException;
 
