@@ -100,6 +100,15 @@ public class View {
     private JPanel calendarPanel2;
     private JPanel calendarPanel3;
     private JPanel calendarPanel4;
+    private JPanel calendarPanel5;
+    /**
+     * {@link #dateComboBox}'s options.
+     */
+    String[] comboBoxOptions;
+    /**
+     * The combo box applying the date filter on {@link model.Model#getTableModel()}.
+     */
+    JComboBox<String> dateComboBox;
     private JLabel startDateLabel;
     private JLabel endDateLabel;
     private JTextField startDateTextField;
@@ -380,6 +389,8 @@ public class View {
      *     <li>{@link #calendarPanel2}</li>
      *     <li>{@link #calendarPanel3}</li>
      *     <li>{@link #calendarPanel4}</li>
+     *     <li>{@link #calendarPanel5}</li>
+     *     <li>{@link #dateComboBox}</li>
      *     <li>{@link #startDateLabel}</li>
      *     <li>{@link #endDateLabel}</li>
      *     <li>{@link #startDateTextField}</li>
@@ -397,17 +408,25 @@ public class View {
         calendarPanel2 = new JPanel();
         calendarPanel3 = new JPanel();
         calendarPanel4 = new JPanel();
+        calendarPanel5 = new JPanel();
         calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
         calendarPanel1.setLayout(new BoxLayout(calendarPanel1, BoxLayout.X_AXIS));
         calendarPanel2.setLayout(new BoxLayout(calendarPanel2, BoxLayout.Y_AXIS));
         calendarPanel3.setLayout(new BoxLayout(calendarPanel3, BoxLayout.Y_AXIS));
         calendarPanel4.setLayout(new BoxLayout(calendarPanel4, BoxLayout.X_AXIS));
+        calendarPanel5.setLayout(new BoxLayout(calendarPanel5, BoxLayout.X_AXIS));
         calendarPanel.setOpaque(false);
         calendarPanel1.setOpaque(false);
         calendarPanel2.setOpaque(false);
         calendarPanel3.setOpaque(false);
         calendarPanel4.setOpaque(false);
+        calendarPanel5.setOpaque(false);
         calendarPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Calendar",0,0, new Font("Arial", Font.BOLD, 14), Color.WHITE), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        // Initializes dateComboBox
+        comboBoxOptions = new String[]{"Today", "This week", "This month", "This year", "Other"};
+        dateComboBox = new JComboBox<>(new DefaultComboBoxModel<>(comboBoxOptions));
+        dateComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, dateComboBox.getPreferredSize().height));
 
         // Initializes the labels
         startDateLabel = new JLabel("Start date");
@@ -435,6 +454,9 @@ public class View {
         calendarPanel3.add(Box.createRigidArea(new Dimension(0, 5)));
         calendarPanel3.add(endDateTextField);
 
+        // Adds the component to calendarPanel5
+        calendarPanel5.add(dateComboBox);
+
         // Adds the components to calendarPanel4
         calendarPanel4.add(applyDateButton);
         calendarPanel4.add(Box.createRigidArea(new Dimension(5, 0)));
@@ -446,6 +468,8 @@ public class View {
         calendarPanel1.add(calendarPanel3);
 
         // Adds the components to calendarPanel
+        calendarPanel.add(calendarPanel5);
+        calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         calendarPanel.add(calendarPanel1);
         calendarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         calendarPanel.add(calendarPanel4);
@@ -648,6 +672,14 @@ public class View {
 
     public JButton getUpdateButton() {
         return updateButton;
+    }
+
+    public String[] getComboBoxOptions() {
+        return comboBoxOptions;
+    }
+
+    public JComboBox<String> getDateComboBox() {
+        return dateComboBox;
     }
 
     public JTextField getStartDateTextField() {
