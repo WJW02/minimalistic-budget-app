@@ -13,7 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Vector;
 
 /**
- * The class for reading .txt files for a {@link Model}.
+ * The class for reading .txt files for {@link Model}s.
  *
  * @author WJW02
  */

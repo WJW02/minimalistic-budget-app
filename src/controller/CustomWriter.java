@@ -5,7 +5,7 @@ import model.Model;
 import java.io.*;
 
 /**
- * The interface for writing files from a {@link Model}.
+ * The interface for writing files from {@link Model}s.
  * <p>
  * The method that classes that implements this interface must implement is {@link #write(Model, File)}.
  *

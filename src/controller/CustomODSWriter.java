@@ -6,7 +6,7 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import java.io.*;
 
 /**
- * The class for writing .ods files from a {@link Model}.
+ * The class for writing .ods files from {@link Model}s.
  *
  * @author WJW02
  */

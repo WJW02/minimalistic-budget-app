@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * The interface for reading files for a {@link Model}.
+ * The interface for reading files for {@link Model}s.
  * <p>
  * The method that classes that implements this interface must implement is {@link #read(File, Model)}.
  *

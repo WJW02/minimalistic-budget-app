@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- * The class for writing .txt files from a {@link Model}.
+ * The class for writing .txt files from {@link Model}s.
  *
  * @author WJW02
  */
