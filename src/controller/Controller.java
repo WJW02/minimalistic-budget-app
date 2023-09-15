@@ -110,10 +110,12 @@ public class Controller {
         initTable();
         addActionListeners();
         clearFilter();
-        previousSearch = "";
+        previousSearch = "";    // Sets previous search to nothing
         isSaveUpToDate = true;
+        // Init file choosers
         saveUploadFileChooser = new SaveUploadFileChooser(isSaveUpToDate);
         exportFileChooser = new ExportFileChooser();
+        // Sets dateTextField() to contain today's date
         view.getDateTextField().setText(LocalDate.now().toString());
     }
 
@@ -240,6 +242,7 @@ public class Controller {
     private void fillOperationalTextFields() {
         JTable table = view.getTable();
         int selectedRowIndex;
+        // If no row is selected clear the text fields
         if ((selectedRowIndex = table.getSelectedRow()) == -1) {
             view.getDateTextField().setText("");
             view.getDescriptionTextField().setText("");
@@ -269,9 +272,11 @@ public class Controller {
     }
 
     /**
-     * Makes a backup of {@link Model}.
+     * Makes a backup of {@link Model} on the file backup.txt in the folder tmp
+     * of the application.
      */
     private void automaticSaveFile() {
+        // If the table is empty, don't save
         if (model.getTableModel().getRowCount() == 0) {
             return;
         }
@@ -285,7 +290,7 @@ public class Controller {
     }
 
     /**
-     * Shows the save dialog to save the {@link Model} in a .txt file.
+     * Shows the save dialog of {@link #saveUploadFileChooser} to save the {@link Model} in a .txt file.
      */
     private void manualSaveFile() {
         if (saveUploadFileChooser.showSaveDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
@@ -307,7 +312,7 @@ public class Controller {
     }
 
     /**
-     * Shows the open dialog to upload a compatible .txt file in the {@link Model}.
+     * Shows the open dialog of {@link #saveUploadFileChooser} to upload a compatible .txt file in the {@link Model}.
      */
     private void uploadFile() {
         if (saveUploadFileChooser.showOpenDialog(view.getFrame()) == JFileChooser.APPROVE_OPTION) {
@@ -328,7 +333,7 @@ public class Controller {
     }
 
     /**
-     * Shows a save dialog to export the {@link Model} in a file (csv, txt, ods).
+     * Shows the save dialog of {@link #exportFileChooser} to export the {@link Model} in a file (csv, txt, ods).
      */
     private void exportFile() {
         // Show FileChooser (that is set to show 3 filters)
@@ -557,6 +562,7 @@ public class Controller {
     private void applyOther() {
         LocalDate fromDate, toDate;
         if (!view.getStartDateTextField().getText().isEmpty()) {
+            // Checks if the text field contains a valid date
             try {
                 fromDate = LocalDate.parse(view.getStartDateTextField().getText());
             } catch (DateTimeParseException dtpe) {
@@ -659,6 +665,8 @@ public class Controller {
             previousSearch = "";
             return;
         } else if (!key.equals(previousSearch)) {
+            // If the string we're searching is different from the previous searched string
+            // reset the search index
             view.getTable().clearSelection();
             searchRowIndex = 0;
             previousSearch = key;
@@ -666,14 +674,20 @@ public class Controller {
 
         int rowCount = view.getTableSorter().getViewRowCount();
         int columnCount = model.getTableModel().getColumnCount();
+
+        // If the search index exceeded the row count of the table, reset it
         if (searchRowIndex >= rowCount) {
             searchRowIndex = 0;
         }
 
+        // For every row
         for (; searchRowIndex < rowCount; ++searchRowIndex) {
+            // Convert the index on the table to its equivalent in the model
             int modelRowIndex = view.getTableSorter().convertRowIndexToModel(searchRowIndex);
+            // For every column of the row
             for (int searchColumnIndex = 0; searchColumnIndex < columnCount; ++searchColumnIndex) {
                 String s = model.getTableModel().getValueAt(modelRowIndex, searchColumnIndex).toString().toLowerCase();
+                // Check if it matches the searched string (case-insensitive)
                 if (s.contains(key)) {
                     view.getTable().changeSelection(searchRowIndex, searchColumnIndex, false, false);
                     fillOperationalTextFields();
