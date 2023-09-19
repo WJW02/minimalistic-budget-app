@@ -1,5 +1,5 @@
 # Minimalistic budget app
-!["Minimalistic budget app GUI"]("img/minimalistic-budget-gui.png")
+![Minimalistic budget app GUI](https://github.com/WJW02/minimalistic-budget-app/blob/main/img/minimalistic-budget-gui.png?raw=true)
 
 It's a simple desktop budget app that let you keep track of your incomes and expenditures.
 
